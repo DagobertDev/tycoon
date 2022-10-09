@@ -1,5 +1,7 @@
-﻿using Godot;
+﻿using System;
+using Godot;
 using Microsoft.Extensions.DependencyInjection;
+using Tycoon.Buildings;
 using Tycoon.GUI;
 
 namespace Tycoon;
@@ -12,19 +14,44 @@ public partial class Main : Node
 		RegisterServices(services);
 		var serviceProvider = services.BuildServiceProvider();
 
-		var goldCounter = serviceProvider.GetRequiredService<GoldLabel>();
-		goldCounter.AnchorsPreset = (int)Control.LayoutPreset.CenterTop;
-		AddChild(goldCounter);
+		var map = serviceProvider.GetRequiredService<Map>();
+		AddChild(map);
+		serviceProvider.GetRequiredService<IGoldCounter>().Gold = 100;
 
-		var fpsCounter = serviceProvider.GetRequiredService<FPSCounter>();
-		fpsCounter.AnchorsPreset = (int)Control.LayoutPreset.TopRight;
-		AddChild(fpsCounter);
+		BuildGUI(serviceProvider);
 	}
 
 	private static void RegisterServices(IServiceCollection serviceCollection)
 	{
-		serviceCollection.AddSingleton<IGoldCounter, GoldCounter>();
-		serviceCollection.AddTransient<GoldLabel>();
-		serviceCollection.AddTransient<FPSCounter>();
+		serviceCollection.AddSingleton<IGoldCounter, GoldCounter>()
+			.AddTransient<GoldLabel>()
+			.AddTransient<FPSCounter>()
+			.AddTransient<BuildControl>()
+			.AddSingleton<IBlueprint, House>()
+			.AddSingleton<Map>()
+			.AddSingleton<IBlueprintPlacer, BlueprintPlacer>()
+			.AddSingleton<BlueprintGhost>();
+	}
+
+	private void BuildGUI(IServiceProvider serviceProvider)
+	{
+		var guiLayer = new CanvasLayer();
+
+		var goldCounter = serviceProvider.GetRequiredService<GoldLabel>();
+		goldCounter.AnchorsPreset = (int)Control.LayoutPreset.CenterTop;
+		guiLayer.AddChild(goldCounter);
+
+		var fpsCounter = serviceProvider.GetRequiredService<FPSCounter>();
+		fpsCounter.AnchorsPreset = (int)Control.LayoutPreset.TopRight;
+		guiLayer.AddChild(fpsCounter);
+
+		var buildingControl = serviceProvider.GetRequiredService<BuildControl>();
+		buildingControl.AnchorsPreset = (int)Control.LayoutPreset.CenterBottom;
+		guiLayer.AddChild(buildingControl);
+
+		AddChild(guiLayer);
+
+		var buildingGhost = serviceProvider.GetRequiredService<BlueprintGhost>();
+		AddChild(buildingGhost);
 	}
 }
