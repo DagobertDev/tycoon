@@ -18,6 +18,9 @@ public partial class Main : Node
 		AddChild(map);
 		serviceProvider.GetRequiredService<IGoldCounter>().Gold = 100;
 
+		var camera = serviceProvider.GetRequiredService<Camera>();
+		AddChild(camera);
+
 		BuildGUI(serviceProvider);
 	}
 
@@ -30,7 +33,8 @@ public partial class Main : Node
 			.AddSingleton<IBlueprint, House>()
 			.AddSingleton<Map>()
 			.AddSingleton<IBlueprintPlacer, BlueprintPlacer>()
-			.AddSingleton<BlueprintGhost>();
+			.AddSingleton<BlueprintGhost>()
+			.AddSingleton<Camera>();
 	}
 
 	private void BuildGUI(IServiceProvider serviceProvider)
