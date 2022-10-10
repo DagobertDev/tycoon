@@ -5,6 +5,8 @@ namespace Tycoon.Buildings;
 
 public partial class BlueprintGhost : Sprite2D
 {
+	private static readonly Color CanBuildColor = Colors.White.Lerp(Colors.Transparent, 0.5f);
+	private static readonly Color CanNotBuildColor = Colors.Red.Lerp(Colors.Transparent, 0.2f);
 	private readonly IBlueprintPlacer _blueprintPlacer;
 	private IBlueprint? _blueprint;
 
@@ -29,7 +31,7 @@ public partial class BlueprintGhost : Sprite2D
 
 		var canPlace = _blueprintPlacer.CanPlace(_blueprint, GlobalTransform);
 
-		SelfModulate = canPlace ? Colors.White : Colors.Red;
+		SelfModulate = canPlace ? CanBuildColor : CanNotBuildColor;
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
