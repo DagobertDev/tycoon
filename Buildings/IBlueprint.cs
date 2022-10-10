@@ -4,7 +4,8 @@ namespace Tycoon.Buildings;
 
 public interface IBlueprint
 {
-	int Cost { get; }
 	string Name { get; }
+	int Cost { get; }
 	Texture2D Texture { get; }
+	Shape2D Shape { get; }
 }
