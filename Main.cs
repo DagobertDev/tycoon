@@ -32,6 +32,7 @@ public partial class Main : Node
 			.AddTransient<FPSCounter>()
 			.AddTransient<BuildControl>()
 			.AddSingleton<IBlueprint, House>()
+			.AddSingleton<IBlueprint, Woodcutter>()
 			.AddSingleton<Map>()
 			.AddSingleton<IBlueprintPlacer, BlueprintPlacer>()
 			.AddSingleton<BlueprintGhost>()
