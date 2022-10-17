@@ -1,6 +1,7 @@
 ﻿using System;
 using Godot;
 using Microsoft.Extensions.DependencyInjection;
+using Tycoon.Assets;
 using Tycoon.Buildings;
 using Tycoon.GUI;
 
