@@ -40,6 +40,7 @@ public class BlueprintPlacer : IBlueprintPlacer
 		var entity = new Area2D
 		{
 			GlobalTransform = transform,
+			Name = blueprint.Name,
 		};
 		entity.AddChild(new CollisionShape2D
 		{

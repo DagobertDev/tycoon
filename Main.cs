@@ -22,6 +22,9 @@ public partial class Main : Node
 		var camera = serviceProvider.GetRequiredService<Camera>();
 		AddChild(camera);
 
+		var entityMenuTrigger = serviceProvider.GetRequiredService<EntityMenu>();
+		AddChild(entityMenuTrigger);
+
 		BuildGUI(serviceProvider);
 	}
 
@@ -36,7 +39,8 @@ public partial class Main : Node
 			.AddSingleton<Map>()
 			.AddSingleton<IBlueprintPlacer, BlueprintPlacer>()
 			.AddSingleton<BlueprintGhost>()
-			.AddSingleton<Camera>();
+			.AddSingleton<Camera>()
+			.AddSingleton<EntityMenu>();
 	}
 
 	private void BuildGUI(IServiceProvider serviceProvider)

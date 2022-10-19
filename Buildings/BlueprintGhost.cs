@@ -49,11 +49,13 @@ public partial class BlueprintGhost : Sprite2D
 			}
 
 			_blueprintPlacer.Place(_blueprint, GlobalTransform);
+			GetViewport().SetInputAsHandled();
 		}
 		else if (@event.IsAction(InputActions.MouseclickRight))
 		{
 			Texture = null;
 			SetEnabled(false);
+			GetViewport().SetInputAsHandled();
 		}
 	}
 
