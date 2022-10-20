@@ -22,9 +22,6 @@ public partial class Main : Node
 		var camera = serviceProvider.GetRequiredService<Camera>();
 		AddChild(camera);
 
-		var entityMenuTrigger = serviceProvider.GetRequiredService<EntityMenu>();
-		AddChild(entityMenuTrigger);
-
 		BuildGUI(serviceProvider);
 	}
 
@@ -60,6 +57,9 @@ public partial class Main : Node
 		guiLayer.AddChild(buildingControl);
 
 		AddChild(guiLayer);
+
+		var entityMenuTrigger = serviceProvider.GetRequiredService<EntityMenu>();
+		AddChild(entityMenuTrigger);
 
 		var buildingGhost = serviceProvider.GetRequiredService<BlueprintGhost>();
 		AddChild(buildingGhost);

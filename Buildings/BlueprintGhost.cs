@@ -45,10 +45,9 @@ public partial class BlueprintGhost : Sprite2D
 
 			if (!_blueprintPlacer.CanPlace(_blueprint, GlobalTransform))
 			{
-				return;
+				_blueprintPlacer.Place(_blueprint, GlobalTransform);
 			}
 
-			_blueprintPlacer.Place(_blueprint, GlobalTransform);
 			GetViewport().SetInputAsHandled();
 		}
 		else if (@event.IsAction(InputActions.MouseclickRight))
