@@ -43,7 +43,7 @@ public partial class BlueprintGhost : Sprite2D
 				throw new InvalidOperationException("Blueprint was not set");
 			}
 
-			if (!_blueprintPlacer.CanPlace(_blueprint, GlobalTransform))
+			if (_blueprintPlacer.CanPlace(_blueprint, GlobalTransform))
 			{
 				_blueprintPlacer.Place(_blueprint, GlobalTransform);
 			}
