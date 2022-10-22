@@ -1,9 +1,10 @@
 ﻿using Godot;
 using Tycoon.Buildings;
+using Tycoon.Components;
 
 namespace Tycoon.Assets;
 
-public class Woodcutter : IBlueprint
+public class Woodcutter : IBlueprint, IProductionSite
 {
 	public string Name => "Woodcutter";
 	public int Cost => 5;
@@ -13,4 +14,6 @@ public class Woodcutter : IBlueprint
 	{
 		Size = new Vector2(512, 512),
 	};
+
+	public Producer Producer { get; } = new(Goods.Wood,  2, 0.1);
 }

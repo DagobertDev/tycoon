@@ -1,14 +1,19 @@
 ﻿using System;
+using DefaultEcs;
+using DefaultEcs.System;
 using Godot;
 using Microsoft.Extensions.DependencyInjection;
 using Tycoon.Assets;
 using Tycoon.Buildings;
 using Tycoon.GUI;
+using Tycoon.Systems;
 
 namespace Tycoon;
 
 public partial class Main : Node
 {
+	private ISystem<double> _system = null!;
+
 	public override void _Ready()
 	{
 		var services = new ServiceCollection();
@@ -22,12 +27,22 @@ public partial class Main : Node
 		var camera = serviceProvider.GetRequiredService<Camera>();
 		AddChild(camera);
 
+		var systems = serviceProvider.GetServices<ISystem<double>>();
+		_system = new SequentialSystem<double>(systems);
+
 		BuildGUI(serviceProvider);
+	}
+
+	public override void _Process(double delta)
+	{
+		_system.Update(delta);
 	}
 
 	private static void RegisterServices(IServiceCollection serviceCollection)
 	{
-		serviceCollection.AddSingleton<IGoldCounter, GoldCounter>()
+		serviceCollection.AddSingleton<World>()
+			.AddSingleton<INodeEntityMapper, NodeEntityMapper>()
+			.AddSingleton<IGoldCounter, GoldCounter>()
 			.AddTransient<GoldLabel>()
 			.AddTransient<FPSCounter>()
 			.AddTransient<BuildControl>()
@@ -37,7 +52,8 @@ public partial class Main : Node
 			.AddSingleton<IBlueprintPlacer, BlueprintPlacer>()
 			.AddSingleton<BlueprintGhost>()
 			.AddSingleton<Camera>()
-			.AddSingleton<EntityMenu>();
+			.AddSingleton<EntityMenu>()
+			.AddSystems();
 	}
 
 	private void BuildGUI(IServiceProvider serviceProvider)
