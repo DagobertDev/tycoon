@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using DefaultEcs;
+using Godot;
 using Tycoon.Components;
 using Tycoon.Systems;
 
@@ -8,6 +9,7 @@ public partial class EntityMenu : ShapeCast2D
 {
 	private readonly INodeEntityMapper _nodeEntityMapper;
 	private readonly PopupMenu _popup = new();
+	private Entity? _entity;
 
 	public EntityMenu(INodeEntityMapper nodeEntityMapper)
 	{
@@ -17,10 +19,12 @@ public partial class EntityMenu : ShapeCast2D
 	public override void _Ready()
 	{
 		SetPhysicsProcess(false);
+		SetProcess(false);
 		CollideWithAreas = true;
 		Shape = new CircleShape2D { Radius = 1 };
 		Enabled = false;
 		AddChild(_popup);
+		_popup.VisibilityChanged += () => SetProcess(_entity != null);
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -40,25 +44,37 @@ public partial class EntityMenu : ShapeCast2D
 		{
 			var collision = GetCollider(0);
 			var entityNode = (Node2D)collision;
-
-			_popup.Clear();
-			_popup.AddItem($"Name: {entityNode.Name}");
-
-			var entity = _nodeEntityMapper.GetEntity(entityNode);
-			if (entity.Has<Inventory>() && entity.Get<Inventory>().Value.Count > 0)
-			{
-				_popup.AddSeparator();
-
-				foreach (var goodAndAmount in entity.Get<Inventory>().Value)
-				{
-					_popup.AddItem($"{goodAndAmount.Key}: {goodAndAmount.Value}");
-				}
-			}
-
+			_entity = _nodeEntityMapper.GetEntity(entityNode);
 			_popup.Show();
+			SetProcess(true);
 		}
 
 		SetPhysicsProcess(false);
 		Enabled = false;
+	}
+
+	public override void _Process(double delta)
+	{
+		_popup.Clear();
+
+		if (_entity is not { IsAlive: true })
+		{
+			return;
+		}
+
+		var entity = _entity.Value;
+		var node = entity.Get<Node2D>();
+
+		_popup.AddItem($"Name: {node.Name}");
+
+		if (entity.Has<Inventory>() && entity.Get<Inventory>().Value.Count > 0)
+		{
+			_popup.AddSeparator();
+
+			foreach (var goodAndAmount in entity.Get<Inventory>().Value)
+			{
+				_popup.AddItem($"{goodAndAmount.Key}: {goodAndAmount.Value}");
+			}
+		}
 	}
 }
