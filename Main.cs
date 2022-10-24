@@ -46,13 +46,12 @@ public partial class Main : Node
 			.AddTransient<GoldLabel>()
 			.AddTransient<FPSCounter>()
 			.AddTransient<BuildControl>()
-			.AddSingleton<IBlueprint, House>()
-			.AddSingleton<IBlueprint, Woodcutter>()
 			.AddSingleton<Map>()
 			.AddSingleton<IBlueprintPlacer, BlueprintPlacer>()
 			.AddSingleton<BlueprintGhost>()
 			.AddSingleton<Camera>()
 			.AddSingleton<EntityMenu>()
+			.AddBlueprints()
 			.AddSystems();
 	}
 
