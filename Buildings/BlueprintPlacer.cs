@@ -59,11 +59,16 @@ public class BlueprintPlacer : IBlueprintPlacer
 		var entity = _world.CreateEntity();
 		entity.Set<Node2D>(godotEntity);
 
+		if (blueprint is IHasInventory inventory)
+		{
+			entity.Set(new Inventory(new Dictionary<Good, int>()));
+			entity.Set(inventory.InventoryCapacity);
+		}
+
 		if (blueprint is IProductionSite productionSite)
 		{
 			entity.Set(productionSite.Producer);
 			entity.Set<ProductionProgress>();
-			entity.Set(new Inventory(new Dictionary<Good, int>()));
 		}
 
 		_map.AddChild(godotEntity);

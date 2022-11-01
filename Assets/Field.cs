@@ -16,4 +16,5 @@ public class Field : IBlueprint, IProductionSite
 	};
 
 	public Producer Producer { get; } = new(Goods.Wheat, 1, 2);
+	public InventoryCapacity InventoryCapacity => 100;
 }

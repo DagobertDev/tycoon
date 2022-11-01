@@ -15,5 +15,6 @@ public class Woodcutter : IBlueprint, IProductionSite
 		Size = new Vector2(512, 512),
 	};
 
-	public Producer Producer { get; } = new(Goods.Wood,  2, 0.1);
+	public Producer Producer { get; } = new(Goods.Wood, 2, 0.1);
+	public InventoryCapacity InventoryCapacity => 100;
 }

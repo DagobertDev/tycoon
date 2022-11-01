@@ -2,7 +2,7 @@
 
 namespace Tycoon.Buildings;
 
-public interface IProductionSite
+public interface IProductionSite : IHasInventory
 {
 	Producer Producer { get; }
 }

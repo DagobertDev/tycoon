@@ -67,9 +67,15 @@ public partial class EntityMenu : ShapeCast2D
 
 		_popup.AddItem($"Name: {node.Name}");
 
-		if (entity.Has<Inventory>() && entity.Get<Inventory>().Value.Count > 0)
+		if (entity.Has<Inventory>())
 		{
 			_popup.AddSeparator();
+
+			var inventoryCapacity = entity.Get<InventoryCapacity>().Value;
+			var usedInventoryCapacity = inventoryCapacity - entity.Get<RemainingInventorySpace>();
+
+			_popup.AddItem(
+				$"Inventory ({usedInventoryCapacity}/{inventoryCapacity})");
 
 			foreach (var goodAndAmount in entity.Get<Inventory>().Value)
 			{

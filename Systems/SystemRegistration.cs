@@ -7,6 +7,14 @@ public static class SystemRegistration
 {
 	public static IServiceCollection AddSystems(this IServiceCollection serviceCollection)
 	{
-		return serviceCollection.AddSingleton<ISystem<double>, ProductionSystem>();
+		return serviceCollection
+			.AddSystem<InventoryCapacitySystem>()
+			.AddSystem<ProductionSystem>();
+	}
+
+	private static IServiceCollection AddSystem<T>(this IServiceCollection serviceCollection)
+		where T : class, ISystem<double>
+	{
+		return serviceCollection.AddSingleton<ISystem<double>, T>();
 	}
 }
