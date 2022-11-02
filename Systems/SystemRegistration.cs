@@ -9,6 +9,7 @@ public static class SystemRegistration
 	{
 		return serviceCollection
 			.AddSystem<InventoryCapacitySystem>()
+			.AddSystem<InventoryFullSystem>()
 			.AddSystem<ProductionSystem>();
 	}
 

@@ -5,6 +5,7 @@ using Tycoon.Components;
 
 namespace Tycoon.Systems;
 
+[Without(typeof(CanNotWorkReason))]
 public sealed partial class ProductionSystem : AEntitySetSystem<double>
 {
 	[Update]
