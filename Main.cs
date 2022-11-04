@@ -5,6 +5,7 @@ using Godot;
 using Microsoft.Extensions.DependencyInjection;
 using Tycoon.Assets;
 using Tycoon.Buildings;
+using Tycoon.Debugging;
 using Tycoon.GUI;
 using Tycoon.Systems;
 
@@ -51,8 +52,10 @@ public partial class Main : Node
 			.AddSingleton<BlueprintGhost>()
 			.AddSingleton<Camera>()
 			.AddSingleton<EntityMenu>()
+			.AddSingleton<DebugConsole>()
 			.AddBlueprints()
-			.AddSystems();
+			.AddSystems()
+			.AddDebugCommands();
 	}
 
 	private void BuildGUI(IServiceProvider serviceProvider)
@@ -78,5 +81,8 @@ public partial class Main : Node
 
 		var buildingGhost = serviceProvider.GetRequiredService<BlueprintGhost>();
 		AddChild(buildingGhost);
+
+		var debugConsole = serviceProvider.GetRequiredService<DebugConsole>();
+		guiLayer.AddChild(debugConsole);
 	}
 }

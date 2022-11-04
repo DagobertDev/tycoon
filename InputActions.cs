@@ -12,4 +12,5 @@ public static class InputActions
 	public static readonly StringName CameraRight = "camera_right";
 	public static readonly StringName CameraUp = "camera_up";
 	public static readonly StringName CameraDown = "camera_down";
+	public static readonly StringName DebugMenu = "debug_menu";
 }
