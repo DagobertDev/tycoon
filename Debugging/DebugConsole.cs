@@ -20,7 +20,7 @@ public partial class DebugConsole : Panel
 		Visible = false;
 
 		AnchorsPreset = (int)LayoutPreset.TopWide;
-		CustomMinimumSize = new Vector2i(0, 100);
+		CustomMinimumSize = new Vector2I(0, 100);
 
 		AddChild(_log);
 

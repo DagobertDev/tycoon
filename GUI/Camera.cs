@@ -33,7 +33,7 @@ public partial class Camera : Camera2D
 			throw new ArgumentOutOfRangeException(nameof(ZoomStep));
 		}
 
-		Current = true;
+		Enabled = true;
 		Zoom = Vector2.One * InitialZoom;
 	}
 

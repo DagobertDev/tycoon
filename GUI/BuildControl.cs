@@ -6,7 +6,7 @@ namespace Tycoon.GUI;
 
 public partial class BuildControl : HBoxContainer
 {
-	private static readonly Vector2i ButtonSize = new(100, 100);
+	private static readonly Vector2I ButtonSize = new(100, 100);
 	private readonly BlueprintGhost _blueprintGhost;
 
 	public BuildControl(IEnumerable<IBlueprint> buildings, BlueprintGhost blueprintGhost)
