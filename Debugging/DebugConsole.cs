@@ -24,10 +24,9 @@ public partial class DebugConsole : Panel
 
 		AddChild(_log);
 
-		var textEdit = new LineEdit
-		{
-			AnchorsPreset = (int)LayoutPreset.BottomWide,
-		};
+		var textEdit = new LineEdit();
+		textEdit.LayoutMode = 1;
+		textEdit.AnchorsPreset = (int)LayoutPreset.BottomWide;
 		textEdit.TextSubmitted += TryRunningCommand;
 		AddChild(textEdit);
 	}

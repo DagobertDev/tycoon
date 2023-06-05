@@ -63,16 +63,19 @@ public partial class Main : Node
 		var guiLayer = new CanvasLayer();
 
 		var goldCounter = serviceProvider.GetRequiredService<GoldLabel>();
-		guiLayer.AddChild(goldCounter);
+		goldCounter.LayoutMode = 1;
 		goldCounter.AnchorsPreset = (int)Control.LayoutPreset.CenterTop;
+		guiLayer.AddChild(goldCounter);
 
 		var fpsCounter = serviceProvider.GetRequiredService<FPSCounter>();
-		guiLayer.AddChild(fpsCounter);
+		fpsCounter.LayoutMode = 1;
 		fpsCounter.AnchorsPreset = (int)Control.LayoutPreset.TopRight;
+		guiLayer.AddChild(fpsCounter);
 
 		var buildingControl = serviceProvider.GetRequiredService<BuildControl>();
-		guiLayer.AddChild(buildingControl);
+		buildingControl.LayoutMode = 1;
 		buildingControl.AnchorsPreset = (int)Control.LayoutPreset.CenterBottom;
+		guiLayer.AddChild(buildingControl);
 		
 		AddChild(guiLayer);
 
