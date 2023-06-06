@@ -44,7 +44,6 @@ public partial class Main : Node
 		serviceCollection.AddSingleton<World>()
 			.AddSingleton<INodeEntityMapper, NodeEntityMapper>()
 			.AddSingleton<IGoldCounter, GoldCounter>()
-			.AddTransient<GoldLabel>()
 			.AddTransient<FPSCounter>()
 			.AddTransient<BuildControl>()
 			.AddSingleton<Map>()
@@ -62,10 +61,18 @@ public partial class Main : Node
 	{
 		var guiLayer = new CanvasLayer();
 
-		var goldCounter = serviceProvider.GetRequiredService<GoldLabel>();
-		goldCounter.LayoutMode = 1;
-		goldCounter.AnchorsPreset = (int)Control.LayoutPreset.CenterTop;
-		guiLayer.AddChild(goldCounter);
+		var goldCounter = serviceProvider.GetRequiredService<IGoldCounter>();
+		
+		var goldLabel = new Label
+		{
+			LayoutMode = 1,
+			AnchorsPreset = (int)Control.LayoutPreset.CenterTop,
+		};
+
+		var disposable = goldCounter.GoldObservable.Subscribe(gold => goldLabel.Text = $"Gold: {gold}");
+		goldLabel.TreeExited += disposable.Dispose;
+		
+		guiLayer.AddChild(goldLabel);
 
 		var fpsCounter = serviceProvider.GetRequiredService<FPSCounter>();
 		fpsCounter.LayoutMode = 1;
