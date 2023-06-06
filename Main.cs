@@ -52,6 +52,10 @@ public partial class Main : Node
 			.AddSingleton<Camera>()
 			.AddSingleton<EntityMenu>()
 			.AddSingleton<DebugConsole>()
+			.AddSingleton(new MapSettings
+			{
+				Size = Vector2I.One * 100_000,
+			})
 			.AddBlueprints()
 			.AddSystems()
 			.AddDebugCommands();
