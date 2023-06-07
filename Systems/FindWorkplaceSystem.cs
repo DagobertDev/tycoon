@@ -30,7 +30,7 @@ public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 
 		var workplace = SelectBestWorkplace(_workplaces.GetEntities(), worker);
 		worker.Set(new Worker(workplace));
-		workplace.Set(workplace.Get<CanNotWorkReason>() &~ CanNotWorkReason.NoEmployee);
+		workplace.RemoveFlag(CanNotWorkReason.NoEmployee);
 	}
 
 	private static Entity SelectBestWorkplace(ReadOnlySpan<Entity> workplaces, Entity worker)

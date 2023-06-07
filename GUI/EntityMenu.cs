@@ -1,4 +1,4 @@
-﻿using DefaultEcs;
+using DefaultEcs;
 using Godot;
 using Tycoon.Components;
 using Tycoon.Systems;
@@ -81,6 +81,12 @@ public partial class EntityMenu : ShapeCast2D
 			{
 				_popup.AddItem($"{goodAndAmount.Key}: {goodAndAmount.Value}");
 			}
+		}
+
+		if (entity.Has<CanNotWorkReason>())
+		{
+			_popup.AddSeparator();
+			_popup.AddItem($"Can't work because: {entity.Get<CanNotWorkReason>()}");
 		}
 	}
 }
