@@ -1,6 +1,5 @@
 using DefaultEcs;
 using System;
-using Tycoon.Components;
 
 namespace Tycoon.Systems;
 
@@ -10,7 +9,7 @@ public static class EnumComponentExtensions
 	{
 		T currentValue = default;
 
-		if (entity.Has<CanNotWorkReason>())
+		if (entity.Has<T>())
 		{
 			currentValue = entity.Get<T>();
 		}
