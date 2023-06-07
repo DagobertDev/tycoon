@@ -1,4 +1,4 @@
-﻿using DefaultEcs.System;
+using DefaultEcs.System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Tycoon.Systems;
@@ -10,7 +10,9 @@ public static class SystemRegistration
 		return serviceCollection
 			.AddSystem<InventoryCapacitySystem>()
 			.AddSystem<InventoryFullSystem>()
-			.AddSystem<ProductionSystem>();
+			.AddSystem<RemoveCanNotWorkReasonNoneSystem>()
+			.AddSystem<ProductionSystem>()
+			.AddSystem<FindWorkplaceSystem>();
 	}
 
 	private static IServiceCollection AddSystem<T>(this IServiceCollection serviceCollection)

@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 using Tycoon.Buildings;
 using Tycoon.Components;
 
@@ -16,5 +16,6 @@ public class Woodcutter : IBlueprint, IProductionSite
 	};
 
 	public Producer Producer { get; } = new(Goods.Wood, 2, 0.1);
+	public bool RequiresWorker => true;
 	public InventoryCapacity InventoryCapacity => 100;
 }

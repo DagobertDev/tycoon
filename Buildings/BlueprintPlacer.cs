@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DefaultEcs;
 using Godot;
@@ -69,6 +69,16 @@ public class BlueprintPlacer : IBlueprintPlacer
 		{
 			entity.Set(productionSite.Producer);
 			entity.Set<ProductionProgress>();
+
+			if (productionSite.RequiresWorker)
+			{
+				entity.Set(CanNotWorkReason.NoEmployee);
+			}
+		}
+
+		if (blueprint is IWorker)
+		{
+			entity.Set(Worker.Unemployed);
 		}
 
 		_map.AddChild(godotEntity);
