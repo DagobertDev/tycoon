@@ -7,13 +7,15 @@ namespace Tycoon.GUI;
 
 public partial class EntityMenu : ShapeCast2D
 {
+	private readonly EntityMultiMap<Worker> _workers;
 	private readonly INodeEntityMapper _nodeEntityMapper;
 	private readonly PopupMenu _popup = new();
 	private Entity? _entity;
 
-	public EntityMenu(INodeEntityMapper nodeEntityMapper)
+	public EntityMenu(INodeEntityMapper nodeEntityMapper, World world)
 	{
 		_nodeEntityMapper = nodeEntityMapper;
+		_workers = world.GetEntities().AsMultiMap<Worker>();
 	}
 
 	public override void _Ready()
@@ -87,6 +89,20 @@ public partial class EntityMenu : ShapeCast2D
 		{
 			_popup.AddSeparator();
 			_popup.AddItem($"Can't work because: {entity.Get<CanNotWorkReason>()}");
+		}
+
+		if (entity.Has<MaximumWorkers>())
+		{
+			_popup.AddSeparator();
+
+			var employeeCount = 0;
+
+			if (_workers.TryGetEntities(new Worker(entity), out var employees))
+			{
+				employeeCount = employees.Length;
+			}
+
+			_popup.AddItem($"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}");
 		}
 	}
 }

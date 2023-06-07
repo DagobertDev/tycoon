@@ -16,6 +16,6 @@ public class Woodcutter : IBlueprint, IProductionSite
 	};
 
 	public Producer Producer { get; } = new(Goods.Wood, 2, 0.1);
-	public bool RequiresWorker => true;
+	public int MaximumWorkers => 2;
 	public InventoryCapacity InventoryCapacity => 100;
 }

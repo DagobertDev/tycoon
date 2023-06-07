@@ -16,6 +16,6 @@ public class Field : IBlueprint, IProductionSite
 	};
 
 	public Producer Producer { get; } = new(Goods.Wheat, 1, 2);
-	public bool RequiresWorker => false;
+	public int MaximumWorkers => 0;
 	public InventoryCapacity InventoryCapacity => 100;
 }

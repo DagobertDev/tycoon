@@ -5,5 +5,5 @@ namespace Tycoon.Buildings;
 public interface IProductionSite : IHasInventory
 {
 	Producer Producer { get; }
-	bool RequiresWorker { get; }
+	int MaximumWorkers { get; }
 }

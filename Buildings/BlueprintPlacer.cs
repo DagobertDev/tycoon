@@ -70,10 +70,17 @@ public class BlueprintPlacer : IBlueprintPlacer
 			entity.Set(productionSite.Producer);
 			entity.Set<ProductionProgress>();
 
-			if (productionSite.RequiresWorker)
+			if (productionSite.MaximumWorkers > 0)
 			{
 				entity.Set(CanNotWorkReason.NoEmployee);
+				entity.Set<HasFreeWorkplace>();
 			}
+			else
+			{
+				entity.Set<NoWorkersRequired>();
+			}
+			
+			entity.Set<MaximumWorkers>(productionSite.MaximumWorkers);
 		}
 
 		if (blueprint is IWorker)

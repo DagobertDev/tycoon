@@ -8,10 +8,12 @@ namespace Tycoon.Systems;
 public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 {
 	private readonly EntitySet _workplaces;
+	private readonly EntityMultiMap<Worker> _workers;
 
 	public FindWorkplaceSystem(World world) : base(world, CreateEntityContainer, null, 0)
 	{
-		_workplaces = world.GetEntities().With((in CanNotWorkReason value) => value.HasFlag(CanNotWorkReason.NoEmployee)).AsSet();
+		_workplaces = world.GetEntities().With<HasFreeWorkplace>().AsSet();
+		_workers = world.GetEntities().AsMultiMap<Worker>();
 	}
 
 	[WithPredicate]
@@ -29,8 +31,14 @@ public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 		}
 
 		var workplace = SelectBestWorkplace(_workplaces.GetEntities(), worker);
-		worker.Set(new Worker(workplace));
+		var workerComponent = new Worker(workplace);
+		worker.Set(workerComponent);
 		workplace.RemoveFlag(CanNotWorkReason.NoEmployee);
+
+		if (_workers[workerComponent].Length == workplace.Get<MaximumWorkers>())
+		{
+			workplace.Remove<HasFreeWorkplace>();
+		}
 	}
 
 	private static Entity SelectBestWorkplace(ReadOnlySpan<Entity> workplaces, Entity worker)
