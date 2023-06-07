@@ -12,12 +12,14 @@ public class BlueprintPlacer : IBlueprintPlacer
 	private readonly Map _map;
 	private readonly ShapeCast2D _shapeCast;
 	private readonly World _world;
+	private readonly MapSettings _mapSettings;
 
-	public BlueprintPlacer(IGoldCounter goldCounter, Map map, World world)
+	public BlueprintPlacer(IGoldCounter goldCounter, Map map, World world, MapSettings mapSettings)
 	{
 		_goldCounter = goldCounter;
 		_map = map;
 		_world = world;
+		_mapSettings = mapSettings;
 		_shapeCast = new ShapeCast2D
 		{
 			MaxResults = 1,
@@ -94,6 +96,11 @@ public class BlueprintPlacer : IBlueprintPlacer
 	public bool CanPlace(IBlueprint blueprint, Transform2D transform)
 	{
 		if (blueprint.Cost > _goldCounter.Gold)
+		{
+			return false;
+		}
+
+		if (!new Rect2(Vector2I.Zero, _mapSettings.Size).HasPoint(transform.Origin))
 		{
 			return false;
 		}
