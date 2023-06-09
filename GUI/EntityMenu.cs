@@ -5,28 +5,41 @@ using Tycoon.Systems;
 
 namespace Tycoon.GUI;
 
-public partial class EntityMenu : ShapeCast2D
+public partial class EntityMenu : PanelContainer
 {
 	private readonly EntityMultiMap<Worker> _workers;
 	private readonly INodeEntityMapper _nodeEntityMapper;
-	private readonly PopupMenu _popup = new();
+	private readonly VBoxContainer _container = new();
+	private readonly Map _map;
+	private ShapeCast2D _shapeCast;
 	private Entity? _entity;
 
-	public EntityMenu(INodeEntityMapper nodeEntityMapper, World world)
+	public EntityMenu(INodeEntityMapper nodeEntityMapper, World world, Map map)
 	{
 		_nodeEntityMapper = nodeEntityMapper;
+		_map = map;
 		_workers = world.GetEntities().AsMultiMap<Worker>();
+		_shapeCast = new ShapeCast2D
+		{
+			CollideWithAreas = true,
+			Shape = new CircleShape2D { Radius = 1 },
+			Enabled = false,
+		};
 	}
 
 	public override void _Ready()
 	{
 		SetPhysicsProcess(false);
 		SetProcess(false);
-		CollideWithAreas = true;
-		Shape = new CircleShape2D { Radius = 1 };
-		Enabled = false;
-		AddChild(_popup);
-		_popup.VisibilityChanged += () => SetProcess(_entity != null);
+		_map.AddChild(_shapeCast);
+
+		var margin = new MarginContainer();
+		margin.AddThemeConstantOverride("margin_top", 10);
+		margin.AddThemeConstantOverride("margin_left", 10);
+		margin.AddThemeConstantOverride("margin_right", 10);
+		margin.AddThemeConstantOverride("margin_bottom", 10);
+		margin.AddChild(_container);
+		AddChild(margin);
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -34,30 +47,33 @@ public partial class EntityMenu : ShapeCast2D
 		if (@event.IsActionPressed(InputActions.MouseclickLeft))
 		{
 			SetPhysicsProcess(true);
-			GlobalPosition = GetGlobalMousePosition();
-			Enabled = true;
+			_shapeCast.GlobalPosition = _shapeCast.GetGlobalMousePosition();
+			_shapeCast.Enabled = true;
 			GetViewport().SetInputAsHandled();
 		}
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (IsColliding())
+		if (_shapeCast.IsColliding())
 		{
-			var collision = GetCollider(0);
+			var collision = _shapeCast.GetCollider(0);
 			var entityNode = (Node2D)collision;
 			_entity = _nodeEntityMapper.GetEntity(entityNode);
-			_popup.Show();
+			Visible = true;
 			SetProcess(true);
 		}
 
 		SetPhysicsProcess(false);
-		Enabled = false;
+		_shapeCast.Enabled = false;
 	}
 
 	public override void _Process(double delta)
 	{
-		_popup.Clear();
+		foreach (var child in _container.GetChildren())
+		{
+			child.QueueFree();
+		}
 
 		if (_entity is not { IsAlive: true })
 		{
@@ -67,33 +83,33 @@ public partial class EntityMenu : ShapeCast2D
 		var entity = _entity.Value;
 		var node = entity.Get<Node2D>();
 
-		_popup.AddItem($"Name: {node.Name}");
+		AddItem($"Name: {node.Name}");
 
 		if (entity.Has<Inventory>())
 		{
-			_popup.AddSeparator();
+			AddSeparator();
 
 			var inventoryCapacity = entity.Get<InventoryCapacity>().Value;
 			var usedInventoryCapacity = inventoryCapacity - entity.Get<RemainingInventorySpace>();
 
-			_popup.AddItem(
+			AddItem(
 				$"Inventory ({usedInventoryCapacity}/{inventoryCapacity})");
 
 			foreach (var goodAndAmount in entity.Get<Inventory>().Value)
 			{
-				_popup.AddItem($"{goodAndAmount.Key}: {goodAndAmount.Value}");
+				AddItem($"{goodAndAmount.Key}: {goodAndAmount.Value}");
 			}
 		}
 
 		if (entity.Has<CanNotWorkReason>())
 		{
-			_popup.AddSeparator();
-			_popup.AddItem($"Can't work because: {entity.Get<CanNotWorkReason>()}");
+			AddSeparator();
+			AddItem($"Can't work because: {entity.Get<CanNotWorkReason>()}");
 		}
 
 		if (entity.Has<MaximumWorkers>())
 		{
-			_popup.AddSeparator();
+			AddSeparator();
 
 			var employeeCount = 0;
 
@@ -102,7 +118,20 @@ public partial class EntityMenu : ShapeCast2D
 				employeeCount = employees.Length;
 			}
 
-			_popup.AddItem($"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}");
+			AddItem($"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}");
 		}
+	}
+
+	private void AddItem(string text)
+	{
+		_container.AddChild(new Label
+		{
+			Text = text,
+		});
+	}
+
+	private void AddSeparator()
+	{
+		_container.AddChild(new HSeparator());
 	}
 }

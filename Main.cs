@@ -66,7 +66,7 @@ public partial class Main : Node
 		var guiLayer = new CanvasLayer();
 
 		var goldCounter = serviceProvider.GetRequiredService<IGoldCounter>();
-		
+
 		var goldLabel = new Label
 		{
 			LayoutMode = 1,
@@ -75,7 +75,7 @@ public partial class Main : Node
 
 		var disposable = goldCounter.GoldObservable.Subscribe(gold => goldLabel.Text = $"Gold: {gold}");
 		goldLabel.TreeExited += disposable.Dispose;
-		
+
 		guiLayer.AddChild(goldLabel);
 
 		var fpsCounter = serviceProvider.GetRequiredService<FPSCounter>();
@@ -87,11 +87,11 @@ public partial class Main : Node
 		buildingControl.LayoutMode = 1;
 		buildingControl.AnchorsPreset = (int)Control.LayoutPreset.CenterBottom;
 		guiLayer.AddChild(buildingControl);
-		
+
 		AddChild(guiLayer);
 
 		var entityMenuTrigger = serviceProvider.GetRequiredService<EntityMenu>();
-		AddChild(entityMenuTrigger);
+		guiLayer.AddChild(entityMenuTrigger);
 
 		var buildingGhost = serviceProvider.GetRequiredService<BlueprintGhost>();
 		AddChild(buildingGhost);
