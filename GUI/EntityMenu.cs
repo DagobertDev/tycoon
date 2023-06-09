@@ -12,7 +12,7 @@ public partial class EntityMenu : PanelContainer
 	private readonly VBoxContainer _container = new();
 	private readonly Map _map;
 	private ShapeCast2D _shapeCast;
-	private Entity? _entity;
+	private Entity _entity;
 
 	public EntityMenu(INodeEntityMapper nodeEntityMapper, World world, Map map)
 	{
@@ -75,50 +75,49 @@ public partial class EntityMenu : PanelContainer
 			child.QueueFree();
 		}
 
-		if (_entity is not { IsAlive: true })
+		if (!_entity.IsAlive)
 		{
 			return;
 		}
 
-		var entity = _entity.Value;
-		var node = entity.Get<Node2D>();
+		var node = _entity.Get<Node2D>();
 
 		AddItem($"Name: {node.Name}");
 
-		if (entity.Has<Inventory>())
+		if (_entity.Has<Inventory>())
 		{
 			AddSeparator();
 
-			var inventoryCapacity = entity.Get<InventoryCapacity>().Value;
-			var usedInventoryCapacity = inventoryCapacity - entity.Get<RemainingInventorySpace>();
+			var inventoryCapacity = _entity.Get<InventoryCapacity>().Value;
+			var usedInventoryCapacity = inventoryCapacity - _entity.Get<RemainingInventorySpace>();
 
 			AddItem(
 				$"Inventory ({usedInventoryCapacity}/{inventoryCapacity})");
 
-			foreach (var goodAndAmount in entity.Get<Inventory>().Value)
+			foreach (var goodAndAmount in _entity.Get<Inventory>().Value)
 			{
 				AddItem($"{goodAndAmount.Key}: {goodAndAmount.Value}");
 			}
 		}
 
-		if (entity.Has<CanNotWorkReason>())
+		if (_entity.Has<CanNotWorkReason>())
 		{
 			AddSeparator();
-			AddItem($"Can't work because: {entity.Get<CanNotWorkReason>()}");
+			AddItem($"Can't work because: {_entity.Get<CanNotWorkReason>()}");
 		}
 
-		if (entity.Has<MaximumWorkers>())
+		if (_entity.Has<MaximumWorkers>())
 		{
 			AddSeparator();
 
 			var employeeCount = 0;
 
-			if (_workers.TryGetEntities(new Worker(entity), out var employees))
+			if (_workers.TryGetEntities(new Worker(_entity), out var employees))
 			{
 				employeeCount = employees.Length;
 			}
 
-			AddItem($"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}");
+			AddItem($"Workers: {employeeCount}/{_entity.Get<MaximumWorkers>().Value}");
 		}
 	}
 
