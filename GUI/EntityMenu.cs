@@ -47,6 +47,7 @@ public partial class EntityMenu : PanelContainer
 		margin.AddChild(_container);
 		AddChild(margin);
 
+		AddButton("Close", () => _entity = default);
 
 		AddItem(entity => $"Name: {entity.Get<Node2D>().Name}");
 
@@ -126,6 +127,7 @@ public partial class EntityMenu : PanelContainer
 		if (!_entity.IsAlive)
 		{
 			Visible = false;
+			return;
 		}
 
 		_entityObservable.OnNext(_entity);
@@ -161,5 +163,13 @@ public partial class EntityMenu : PanelContainer
 		visibilityObservable
 			.DistinctUntilChanged()
 			.Subscribe(visible => separator.Visible = visible);
+	}
+
+	private void AddButton(string text, Action action)
+	{
+		var button = new Button();
+		_container.AddChild(button);
+		button.Text = text;
+		button.Pressed += action;
 	}
 }
