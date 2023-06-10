@@ -1,3 +1,7 @@
+using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Text;
 using DefaultEcs;
 using Godot;
 using Tycoon.Components;
@@ -13,6 +17,7 @@ public partial class EntityMenu : PanelContainer
 	private readonly Map _map;
 	private ShapeCast2D _shapeCast;
 	private Entity _entity;
+	private readonly ISubject<Entity> _entityObservable = new Subject<Entity>();
 
 	public EntityMenu(INodeEntityMapper nodeEntityMapper, World world, Map map)
 	{
@@ -25,6 +30,7 @@ public partial class EntityMenu : PanelContainer
 			Shape = new CircleShape2D { Radius = 1 },
 			Enabled = false,
 		};
+		Visible = false;
 	}
 
 	public override void _Ready()
@@ -40,6 +46,53 @@ public partial class EntityMenu : PanelContainer
 		margin.AddThemeConstantOverride("margin_bottom", 10);
 		margin.AddChild(_container);
 		AddChild(margin);
+
+
+		AddItem(entity => $"Name: {entity.Get<Node2D>().Name}");
+
+		{
+			var visibility = _entityObservable.Select(entity => entity.Has<Inventory>());
+			AddSeparator(visibility);
+			AddItem(visibility, entity =>
+			{
+				var inventoryCapacity = entity.Get<InventoryCapacity>().Value;
+				var usedInventoryCapacity = inventoryCapacity - entity.Get<RemainingInventorySpace>();
+				return $"Inventory ({usedInventoryCapacity}/{inventoryCapacity})";
+			});
+			AddItem(_entityObservable.Select(entity => entity.Has<Inventory>() && entity.Get<Inventory>().Value.Count > 0), entity =>
+			{
+				var stringBuilder = new StringBuilder();
+
+				foreach (var goodAndAmount in entity.Get<Inventory>().Value)
+				{
+					stringBuilder.AppendLine($"{goodAndAmount.Key}: {goodAndAmount.Value}");
+				}
+
+				return stringBuilder.ToString();
+			});
+		}
+
+		{
+			var visibility = _entityObservable.Select(entity => entity.Has<CanNotWorkReason>());
+			AddSeparator(visibility);
+			AddItem(visibility, entity => $"Can't work because: {entity.Get<CanNotWorkReason>()}");
+		}
+
+		{
+			var visibility = _entityObservable.Select(entity => entity.Has<MaximumWorkers>());
+			AddSeparator(visibility);
+			AddItem(visibility, entity =>
+			{
+				var employeeCount = 0;
+
+				if (_workers.TryGetEntities(new Worker(entity), out var employees))
+				{
+					employeeCount = employees.Length;
+				}
+
+				return $"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}";
+			});
+		}
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -70,67 +123,43 @@ public partial class EntityMenu : PanelContainer
 
 	public override void _Process(double delta)
 	{
-		foreach (var child in _container.GetChildren())
-		{
-			child.QueueFree();
-		}
-
 		if (!_entity.IsAlive)
 		{
-			return;
+			Visible = false;
 		}
 
-		var node = _entity.Get<Node2D>();
-
-		AddItem($"Name: {node.Name}");
-
-		if (_entity.Has<Inventory>())
-		{
-			AddSeparator();
-
-			var inventoryCapacity = _entity.Get<InventoryCapacity>().Value;
-			var usedInventoryCapacity = inventoryCapacity - _entity.Get<RemainingInventorySpace>();
-
-			AddItem(
-				$"Inventory ({usedInventoryCapacity}/{inventoryCapacity})");
-
-			foreach (var goodAndAmount in _entity.Get<Inventory>().Value)
-			{
-				AddItem($"{goodAndAmount.Key}: {goodAndAmount.Value}");
-			}
-		}
-
-		if (_entity.Has<CanNotWorkReason>())
-		{
-			AddSeparator();
-			AddItem($"Can't work because: {_entity.Get<CanNotWorkReason>()}");
-		}
-
-		if (_entity.Has<MaximumWorkers>())
-		{
-			AddSeparator();
-
-			var employeeCount = 0;
-
-			if (_workers.TryGetEntities(new Worker(_entity), out var employees))
-			{
-				employeeCount = employees.Length;
-			}
-
-			AddItem($"Workers: {employeeCount}/{_entity.Get<MaximumWorkers>().Value}");
-		}
+		_entityObservable.OnNext(_entity);
 	}
 
-	private void AddItem(string text)
+	private void AddItem(Func<Entity, string> textSelector)
 	{
-		_container.AddChild(new Label
-		{
-			Text = text,
-		});
+		var label = new Label();
+		_container.AddChild(label);
+		_entityObservable
+			.Select(textSelector)
+			.DistinctUntilChanged()
+			.Subscribe(text => label.Text = text);
 	}
 
-	private void AddSeparator()
+	private void AddItem(IObservable<bool> visibilityObservable, Func<Entity, string> textSelector)
 	{
-		_container.AddChild(new HSeparator());
+		var label = new Label();
+		_container.AddChild(label);
+		visibilityObservable.DistinctUntilChanged().Subscribe(visible => label.Visible = visible);
+		_entityObservable
+			.WithLatestFrom(visibilityObservable)
+			.Where(x => x.Second)
+			.Select(x => textSelector(x.First))
+			.DistinctUntilChanged()
+			.Subscribe(text => label.Text = text);
+	}
+
+	private void AddSeparator(IObservable<bool> visibilityObservable)
+	{
+		var separator = new HSeparator();
+		_container.AddChild(separator);
+		visibilityObservable
+			.DistinctUntilChanged()
+			.Subscribe(visible => separator.Visible = visible);
 	}
 }
