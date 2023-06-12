@@ -94,6 +94,8 @@ public partial class EntityMenu : PanelContainer
 				return $"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}";
 			});
 		}
+
+		AddButton("Delete", () => _entity.Dispose());
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
