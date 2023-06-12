@@ -95,6 +95,22 @@ public partial class EntityMenu : PanelContainer
 			});
 		}
 
+		{
+			var visibility = _entityObservable.Select(entity => entity.Has<Worker>());
+			AddSeparator(visibility);
+			AddItem(visibility, entity =>
+			{
+				var workplace = entity.Get<Worker>().Workplace;
+
+				if (workplace.IsAlive)
+				{
+					return workplace.Get<Node2D>().Name;
+				}
+
+				return "Unemployed";
+			});
+		}
+
 		AddButton("Delete", () => _entity.Dispose());
 	}
 
