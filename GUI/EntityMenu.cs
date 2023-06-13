@@ -6,12 +6,12 @@ using DefaultEcs;
 using Godot;
 using Tycoon.Components;
 using Tycoon.Systems;
+using Tycoon.Systems.Helpers;
 
 namespace Tycoon.GUI;
 
 public partial class EntityMenu : PanelContainer
 {
-	private readonly EntityMultiMap<Worker> _workers;
 	private readonly INodeEntityMapper _nodeEntityMapper;
 	private readonly VBoxContainer _container = new();
 	private readonly Map _map;
@@ -19,11 +19,10 @@ public partial class EntityMenu : PanelContainer
 	private Entity _entity;
 	private readonly ISubject<Entity> _entityObservable = new Subject<Entity>();
 
-	public EntityMenu(INodeEntityMapper nodeEntityMapper, World world, Map map)
+	public EntityMenu(INodeEntityMapper nodeEntityMapper, Map map)
 	{
 		_nodeEntityMapper = nodeEntityMapper;
 		_map = map;
-		_workers = world.GetEntities().AsMultiMap<Worker>();
 		_shapeCast = new ShapeCast2D
 		{
 			CollideWithAreas = true,
@@ -84,13 +83,7 @@ public partial class EntityMenu : PanelContainer
 			AddSeparator(visibility);
 			AddItem(visibility, entity =>
 			{
-				var employeeCount = 0;
-
-				if (_workers.TryGetEntities(new Worker(entity), out var employees))
-				{
-					employeeCount = employees.Length;
-				}
-
+				var employeeCount = WorkplaceHelper.GetWorkerCount(entity);
 				return $"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}";
 			});
 		}
