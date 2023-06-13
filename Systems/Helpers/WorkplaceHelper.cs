@@ -10,6 +10,15 @@ public static class WorkplaceHelper
 	private static readonly ConcurrentDictionary<World, EntityMultiMap<Worker>> _worldWorkers = new();
 
 	/// <summary>
+	/// Returns the workers that work at the <see cref="workplace"/>
+	/// </summary>
+	public static ReadOnlySpan<Entity> GetWorkers(Entity workplace)
+	{
+		var workers = GetWorkersInternal(workplace);
+		return workers;
+	}
+
+	/// <summary>
 	/// Returns the number of workers that work at the <see cref="workplace"/>
 	/// </summary>
 	public static int GetWorkerCount(Entity workplace)
