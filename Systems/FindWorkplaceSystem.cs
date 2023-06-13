@@ -14,6 +14,7 @@ public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 	{
 		_workplaces = world.GetEntities().With<HasFreeWorkplace>().AsSet();
 		_workers = world.GetEntities().AsMultiMap<Worker>();
+		world.SubscribeComponentRemoved<MaximumWorkers>(HandleWorkplaceDeletion);
 	}
 
 	[WithPredicate]
@@ -38,6 +39,19 @@ public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 		if (_workers[workerComponent].Length == workplace.Get<MaximumWorkers>())
 		{
 			workplace.Remove<HasFreeWorkplace>();
+		}
+	}
+
+	private void HandleWorkplaceDeletion(in Entity workplace, in MaximumWorkers _)
+	{
+		if (!_workers.TryGetEntities(new Worker(workplace), out var workers))
+		{
+			return;
+		}
+
+		foreach (var worker in workers)
+		{
+			worker.Set(Worker.Unemployed);
 		}
 	}
 
