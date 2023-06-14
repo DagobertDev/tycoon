@@ -46,6 +46,7 @@ public partial class Main : Node
 			.AddSingleton<IGoldCounter, GoldCounter>()
 			.AddTransient<FPSCounter>()
 			.AddTransient<BuildControl>()
+			.AddTransient<GameView>()
 			.AddSingleton<Map>()
 			.AddSingleton<IBlueprintPlacer, BlueprintPlacer>()
 			.AddSingleton<BlueprintGhost>()
@@ -63,40 +64,10 @@ public partial class Main : Node
 
 	private void BuildGUI(IServiceProvider serviceProvider)
 	{
-		var guiLayer = new CanvasLayer();
-
-		var goldCounter = serviceProvider.GetRequiredService<IGoldCounter>();
-
-		var goldLabel = new Label
-		{
-			LayoutMode = 1,
-			AnchorsPreset = (int)Control.LayoutPreset.CenterTop,
-		};
-
-		var disposable = goldCounter.GoldObservable.Subscribe(gold => goldLabel.Text = $"Gold: {gold}");
-		goldLabel.TreeExited += disposable.Dispose;
-
-		guiLayer.AddChild(goldLabel);
-
-		var fpsCounter = serviceProvider.GetRequiredService<FPSCounter>();
-		fpsCounter.LayoutMode = 1;
-		fpsCounter.AnchorsPreset = (int)Control.LayoutPreset.TopRight;
-		guiLayer.AddChild(fpsCounter);
-
-		var buildingControl = serviceProvider.GetRequiredService<BuildControl>();
-		buildingControl.LayoutMode = 1;
-		buildingControl.AnchorsPreset = (int)Control.LayoutPreset.CenterBottom;
-		guiLayer.AddChild(buildingControl);
-
+		var guiLayer = serviceProvider.GetRequiredService<GameView>();
 		AddChild(guiLayer);
-
-		var entityMenuTrigger = serviceProvider.GetRequiredService<EntityMenu>();
-		guiLayer.AddChild(entityMenuTrigger);
 
 		var buildingGhost = serviceProvider.GetRequiredService<BlueprintGhost>();
 		AddChild(buildingGhost);
-
-		var debugConsole = serviceProvider.GetRequiredService<DebugConsole>();
-		guiLayer.AddChild(debugConsole);
 	}
 }
