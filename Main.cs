@@ -44,7 +44,6 @@ public partial class Main : Node
 		serviceCollection.AddSingleton<World>()
 			.AddSingleton<INodeEntityMapper, NodeEntityMapper>()
 			.AddSingleton<IGoldCounter, GoldCounter>()
-			.AddTransient<FPSCounter>()
 			.AddTransient<BuildControl>()
 			.AddTransient<GameView>()
 			.AddSingleton<Map>()
