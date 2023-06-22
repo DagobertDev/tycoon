@@ -91,17 +91,15 @@ public partial class EntityMenu : PanelContainer
 		{
 			var visibility = _entityObservable.Select(entity => entity.Has<Worker>());
 			AddSeparator(visibility);
-			AddItem(visibility, entity =>
+
+			AddItem(_entityObservable.Select(entity => entity.Has<Worker>() && !entity.Get<Worker>().Workplace.IsAlive),
+			                                 _ => "Unemployed");
+
+			AddButton(_entityObservable.Select(entity => entity.Has<Worker>() && entity.Get<Worker>().Workplace.IsAlive), entity =>
 			{
 				var workplace = entity.Get<Worker>().Workplace;
-
-				if (workplace.IsAlive)
-				{
-					return workplace.Get<Node2D>().Name;
-				}
-
-				return "Unemployed";
-			});
+				return workplace.Get<Node2D>().Name;
+			}, () =>  _entity = _entity.Get<Worker>().Workplace);
 		}
 
 		AddButton("Delete", () => _entity.Dispose());
@@ -174,6 +172,22 @@ public partial class EntityMenu : PanelContainer
 		visibilityObservable
 			.DistinctUntilChanged()
 			.Subscribe(visible => separator.Visible = visible);
+	}
+
+	private void AddButton(IObservable<bool> visibilityObservable, Func<Entity, string> textSelector, Action action)
+	{
+		var button = new Button();
+		_container.AddChild(button);
+		button.Pressed += action;
+		visibilityObservable
+			.DistinctUntilChanged()
+			.Subscribe(visible => button.Visible = visible);
+		_entityObservable
+			.WithLatestFrom(visibilityObservable)
+			.Where(x => x.Second)
+			.Select(x => textSelector(x.First))
+			.DistinctUntilChanged()
+			.Subscribe(text => button.Text = text);
 	}
 
 	private void AddButton(string text, Action action)
