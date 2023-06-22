@@ -12,6 +12,8 @@ public partial class Camera : Camera2D
 	private float ZoomStep => 0.1f;
 	private float InitialZoom => 0.5f;
 
+	private Entity _selectedEntity;
+
 	public override void _Ready()
 	{
 		if (Speed <= 0)
@@ -53,6 +55,7 @@ public partial class Camera : Camera2D
 		else if (@event is InputEventMouseMotion motion && Input.IsActionPressed(InputActions.MouseclickRight))
 		{
 			GlobalPosition -= motion.Relative / Zoom;
+			_selectedEntity = default;
 		}
 	}
 
@@ -65,10 +68,29 @@ public partial class Camera : Camera2D
 			InputActions.CameraDown);
 
 		Position += Speed * (float)delta * direction;
+
+		if (_selectedEntity.IsAlive && direction == Vector2.Zero)
+		{
+			Focus(_selectedEntity);
+		}
+		else
+		{
+			_selectedEntity = default;
+		}
 	}
 
 	public void Focus(Entity entity)
 	{
 		GlobalPosition = entity.Get<Node2D>().GlobalPosition;
+
+		if (_selectedEntity != entity)
+		{
+			_selectedEntity = default;
+		}
+	}
+
+	public void Follow(Entity entity)
+	{
+		_selectedEntity = entity;
 	}
 }

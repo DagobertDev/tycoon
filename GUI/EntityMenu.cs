@@ -50,7 +50,7 @@ public partial class EntityMenu : PanelContainer
 		AddChild(margin);
 
 		AddButton("Close", () => _entity = default);
-		AddButton("Focus", () => _camera.Focus(_entity));
+		AddButton("Focus", () => _camera.Focus(_entity), () => _camera.Follow(_entity));
 		AddSeparator();
 		AddLabel(entity => $"Name: {entity.Get<Node2D>().Name}");
 
@@ -194,12 +194,23 @@ public partial class EntityMenu : PanelContainer
 			.Subscribe(text => button.Text = text);
 	}
 
-	private void AddButton(string text, Action action)
+	private void AddButton(string text, Action action, Action? doubleClickAction = null)
 	{
 		var button = new Button();
 		_container.AddChild(button);
 		button.Text = text;
 		button.Pressed += action;
+
+		if (doubleClickAction != null)
+		{
+			var timeBetweenDoubleClicks = TimeSpan.FromSeconds(0.25f);
+
+			Observable.FromEvent(handler => button.Pressed += handler, handler => button.Pressed -= handler)
+				.TimeInterval()
+				.Where(unit => unit.Interval <= timeBetweenDoubleClicks)
+				.Subscribe(_ => doubleClickAction());
+		}
+
 	}
 
 	/// <summary>
