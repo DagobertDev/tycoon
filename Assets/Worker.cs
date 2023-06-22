@@ -1,5 +1,6 @@
 using Godot;
 using Tycoon.Buildings;
+using Tycoon.Components;
 
 namespace Tycoon.Assets;
 
@@ -12,4 +13,6 @@ public class Worker : IBlueprint, IWorker
 	{
 		Radius = 32,
 	};
+
+	public Speed Speed => 200;
 }

@@ -13,7 +13,9 @@ public static class SystemRegistration
 			.AddSystem<RemoveCanNotWorkReasonNoneSystem>()
 			.AddSystem<ProductionSystem>()
 			.AddSystem<FindWorkplaceSystem>()
-			.AddSystem<NodeRemovalSystem>();
+			.AddSystem<NodeRemovalSystem>()
+			.AddSystem<WalkSystem>()
+			.AddSystem<MovementSystem>();
 	}
 
 	private static IServiceCollection AddSystem<T>(this IServiceCollection serviceCollection)
