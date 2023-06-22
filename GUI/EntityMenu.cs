@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
@@ -47,13 +48,12 @@ public partial class EntityMenu : PanelContainer
 		AddChild(margin);
 
 		AddButton("Close", () => _entity = default);
-
+		AddSeparator();
 		AddLabel(entity => $"Name: {entity.Get<Node2D>().Name}");
 
+		using (Section(EntityHas<Inventory>()))
 		{
-			var hasInventory = EntityHas<Inventory>();
-			AddSeparator(hasInventory);
-			AddLabel(hasInventory, entity =>
+			AddLabel(entity =>
 			{
 				var inventoryCapacity = entity.Get<InventoryCapacity>().Value;
 				var usedInventoryCapacity = inventoryCapacity - entity.Get<RemainingInventorySpace>();
@@ -72,28 +72,24 @@ public partial class EntityMenu : PanelContainer
 			});
 		}
 
+		using (Section(EntityHas<CanNotWorkReason>()))
 		{
-			var cantWork = EntityHas<CanNotWorkReason>();
-			AddSeparator(cantWork);
-			AddLabel(cantWork, entity => $"Can't work because: {entity.Get<CanNotWorkReason>()}");
+			AddLabel(entity => $"Can't work because: {entity.Get<CanNotWorkReason>()}");
 		}
 
+		using (Section(EntityHas<MaximumWorkers>()))
 		{
-			var hasWorkers = EntityHas<MaximumWorkers>();
-			AddSeparator(hasWorkers);
-			AddLabel(hasWorkers, entity =>
+			AddLabel(entity =>
 			{
 				var employeeCount = WorkplaceHelper.GetWorkerCount(entity);
 				return $"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}";
 			});
 		}
 
+		using (Section(EntityHas<Worker>()))
 		{
-			var isWorker = EntityHas<Worker>();
-			AddSeparator(isWorker);
-
 			var employed = EntityHas<Worker>(worker => worker.Workplace.IsAlive);
-			var unemployed = employed.Select(value => !value);
+			var unemployed = EntityHas<Worker>(worker => !worker.Workplace.IsAlive);
 
 			AddLabel(unemployed, _ => "Unemployed");
 
@@ -104,6 +100,7 @@ public partial class EntityMenu : PanelContainer
 			}, () =>  _entity = _entity.Get<Worker>().Workplace);
 		}
 
+		AddSeparator();
 		AddButton("Delete", () => _entity.Dispose());
 	}
 
@@ -144,27 +141,24 @@ public partial class EntityMenu : PanelContainer
 		_entityObservable.OnNext(_entity);
 	}
 
-	private void AddLabel(Func<Entity, string> textSelector)
-	{
-		var label = new Label();
-		_container.AddChild(label);
-		_entityObservable
-			.Select(textSelector)
-			.DistinctUntilChanged()
-			.Subscribe(text => label.Text = text);
-	}
-
 	private void AddLabel(IObservable<bool> visibilityObservable, Func<Entity, string> textSelector)
 	{
 		var label = new Label();
 		_container.AddChild(label);
-		visibilityObservable.DistinctUntilChanged().Subscribe(visible => label.Visible = visible);
+		visibilityObservable
+			.DistinctUntilChanged()
+			.Subscribe(visible => label.Visible = visible);
 		_entityObservable
 			.WithLatestFrom(visibilityObservable)
 			.Where(x => x.Second)
 			.Select(x => textSelector(x.First))
 			.DistinctUntilChanged()
 			.Subscribe(text => label.Text = text);
+	}
+
+	private void AddLabel(Func<Entity, string> textSelector)
+	{
+		AddLabel(_currentSectionVisibility, textSelector);
 	}
 
 	private void AddSeparator(IObservable<bool> visibilityObservable)
@@ -174,6 +168,11 @@ public partial class EntityMenu : PanelContainer
 		visibilityObservable
 			.DistinctUntilChanged()
 			.Subscribe(visible => separator.Visible = visible);
+	}
+
+	private void AddSeparator()
+	{
+		AddSeparator(_currentSectionVisibility);
 	}
 
 	private void AddButton(IObservable<bool> visibilityObservable, Func<Entity, string> textSelector, Action action)
@@ -199,6 +198,19 @@ public partial class EntityMenu : PanelContainer
 		button.Text = text;
 		button.Pressed += action;
 	}
+	
+	/// <summary>
+	/// Creates a new section that can be used to group items.
+	/// Items in a section have the same visibility by default.
+	/// </summary>
+	private IDisposable Section(IObservable<bool> visibility)
+	{
+		_currentSectionVisibility = visibility;
+		AddSeparator();
+		return Disposable.Create(() => _currentSectionVisibility = Observable.Return(true));
+	}
+
+	private IObservable<bool> _currentSectionVisibility = Observable.Return(true);
 
 	private IObservable<bool> EntityHas<T>()
 	{
