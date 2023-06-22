@@ -48,18 +48,18 @@ public partial class EntityMenu : PanelContainer
 
 		AddButton("Close", () => _entity = default);
 
-		AddItem(entity => $"Name: {entity.Get<Node2D>().Name}");
+		AddLabel(entity => $"Name: {entity.Get<Node2D>().Name}");
 
 		{
 			var visibility = _entityObservable.Select(entity => entity.Has<Inventory>());
 			AddSeparator(visibility);
-			AddItem(visibility, entity =>
+			AddLabel(visibility, entity =>
 			{
 				var inventoryCapacity = entity.Get<InventoryCapacity>().Value;
 				var usedInventoryCapacity = inventoryCapacity - entity.Get<RemainingInventorySpace>();
 				return $"Inventory ({usedInventoryCapacity}/{inventoryCapacity})";
 			});
-			AddItem(_entityObservable.Select(entity => entity.Has<Inventory>() && entity.Get<Inventory>().Value.Count > 0), entity =>
+			AddLabel(_entityObservable.Select(entity => entity.Has<Inventory>() && entity.Get<Inventory>().Value.Count > 0), entity =>
 			{
 				var stringBuilder = new StringBuilder();
 
@@ -75,13 +75,13 @@ public partial class EntityMenu : PanelContainer
 		{
 			var visibility = _entityObservable.Select(entity => entity.Has<CanNotWorkReason>());
 			AddSeparator(visibility);
-			AddItem(visibility, entity => $"Can't work because: {entity.Get<CanNotWorkReason>()}");
+			AddLabel(visibility, entity => $"Can't work because: {entity.Get<CanNotWorkReason>()}");
 		}
 
 		{
 			var visibility = _entityObservable.Select(entity => entity.Has<MaximumWorkers>());
 			AddSeparator(visibility);
-			AddItem(visibility, entity =>
+			AddLabel(visibility, entity =>
 			{
 				var employeeCount = WorkplaceHelper.GetWorkerCount(entity);
 				return $"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}";
@@ -92,7 +92,7 @@ public partial class EntityMenu : PanelContainer
 			var visibility = _entityObservable.Select(entity => entity.Has<Worker>());
 			AddSeparator(visibility);
 
-			AddItem(_entityObservable.Select(entity => entity.Has<Worker>() && !entity.Get<Worker>().Workplace.IsAlive),
+			AddLabel(_entityObservable.Select(entity => entity.Has<Worker>() && !entity.Get<Worker>().Workplace.IsAlive),
 			                                 _ => "Unemployed");
 
 			AddButton(_entityObservable.Select(entity => entity.Has<Worker>() && entity.Get<Worker>().Workplace.IsAlive), entity =>
@@ -142,7 +142,7 @@ public partial class EntityMenu : PanelContainer
 		_entityObservable.OnNext(_entity);
 	}
 
-	private void AddItem(Func<Entity, string> textSelector)
+	private void AddLabel(Func<Entity, string> textSelector)
 	{
 		var label = new Label();
 		_container.AddChild(label);
@@ -152,7 +152,7 @@ public partial class EntityMenu : PanelContainer
 			.Subscribe(text => label.Text = text);
 	}
 
-	private void AddItem(IObservable<bool> visibilityObservable, Func<Entity, string> textSelector)
+	private void AddLabel(IObservable<bool> visibilityObservable, Func<Entity, string> textSelector)
 	{
 		var label = new Label();
 		_container.AddChild(label);
