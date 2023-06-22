@@ -1,4 +1,5 @@
 ﻿using System;
+using DefaultEcs;
 using Godot;
 
 namespace Tycoon.GUI;
@@ -64,5 +65,10 @@ public partial class Camera : Camera2D
 			InputActions.CameraDown);
 
 		Position += Speed * (float)delta * direction;
+	}
+
+	public void Focus(Entity entity)
+	{
+		GlobalPosition = entity.Get<Node2D>().GlobalPosition;
 	}
 }

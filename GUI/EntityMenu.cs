@@ -16,14 +16,16 @@ public partial class EntityMenu : PanelContainer
 	private readonly INodeEntityMapper _nodeEntityMapper;
 	private readonly VBoxContainer _container = new();
 	private readonly Map _map;
+	private readonly Camera _camera;
 	private ShapeCast2D _shapeCast;
 	private Entity _entity;
 	private readonly ISubject<Entity> _entityObservable = new Subject<Entity>();
 
-	public EntityMenu(INodeEntityMapper nodeEntityMapper, Map map)
+	public EntityMenu(INodeEntityMapper nodeEntityMapper, Map map, Camera camera)
 	{
 		_nodeEntityMapper = nodeEntityMapper;
 		_map = map;
+		_camera = camera;
 		_shapeCast = new ShapeCast2D
 		{
 			CollideWithAreas = true,
@@ -48,6 +50,7 @@ public partial class EntityMenu : PanelContainer
 		AddChild(margin);
 
 		AddButton("Close", () => _entity = default);
+		AddButton("Focus", () => _camera.Focus(_entity));
 		AddSeparator();
 		AddLabel(entity => $"Name: {entity.Get<Node2D>().Name}");
 
@@ -198,7 +201,7 @@ public partial class EntityMenu : PanelContainer
 		button.Text = text;
 		button.Pressed += action;
 	}
-	
+
 	/// <summary>
 	/// Creates a new section that can be used to group items.
 	/// Items in a section have the same visibility by default.
