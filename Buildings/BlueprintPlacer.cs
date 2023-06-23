@@ -47,6 +47,7 @@ public class BlueprintPlacer : IBlueprintPlacer
 		var godotEntity = new Area2D
 		{
 			Name = blueprint.Name,
+			ZIndex = blueprint is IWorker ? 1 : 0,
 		};
 		godotEntity.AddChild(new CollisionShape2D
 		{
