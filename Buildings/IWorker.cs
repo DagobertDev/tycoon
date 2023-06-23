@@ -2,4 +2,7 @@ using Tycoon.Components;
 
 namespace Tycoon.Buildings;
 
-public interface IWorker { }
+public interface IWorker
+{
+	Speed Speed { get; }
+}

@@ -81,13 +81,14 @@ public class BlueprintPlacer : IBlueprintPlacer
 			{
 				entity.Set<NoWorkersRequired>();
 			}
-			
+
 			entity.Set<MaximumWorkers>(productionSite.MaximumWorkers);
 		}
 
-		if (blueprint is IWorker)
+		if (blueprint is IWorker worker)
 		{
 			entity.Set(Worker.Unemployed);
+			entity.Set(worker.Speed);
 		}
 
 		_map.AddChild(godotEntity);
