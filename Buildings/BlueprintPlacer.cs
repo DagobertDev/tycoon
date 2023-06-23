@@ -46,7 +46,6 @@ public class BlueprintPlacer : IBlueprintPlacer
 
 		var godotEntity = new Area2D
 		{
-			GlobalTransform = transform,
 			Name = blueprint.Name,
 		};
 		godotEntity.AddChild(new CollisionShape2D
@@ -60,6 +59,7 @@ public class BlueprintPlacer : IBlueprintPlacer
 
 		var entity = _world.CreateEntity();
 		entity.Set<Node2D>(godotEntity);
+		entity.Set<Position>(transform.Origin);
 
 		if (blueprint is IHasInventory inventory)
 		{

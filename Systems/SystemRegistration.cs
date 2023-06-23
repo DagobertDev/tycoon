@@ -15,7 +15,8 @@ public static class SystemRegistration
 			.AddSystem<FindWorkplaceSystem>()
 			.AddSystem<NodeRemovalSystem>()
 			.AddSystem<WalkSystem>()
-			.AddSystem<MovementSystem>();
+			.AddSystem<MovementSystem>()
+			.AddSystem<Node2DPositionSystem>();
 	}
 
 	private static IServiceCollection AddSystem<T>(this IServiceCollection serviceCollection)

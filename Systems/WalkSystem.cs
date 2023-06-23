@@ -14,14 +14,14 @@ public sealed partial class WalkSystem : AEntitySetSystem<double>
 	private readonly MapSettings _mapSettings;
 
 	[Update, UseBuffer]
-	private void Update(in Entity entity, in Node2D node2D)
+	private void Update(in Entity entity, in Position position)
 	{
 		const int maxOffset = 1000;
 
 		var xOffset = Random.Shared.Next(-maxOffset, maxOffset);
 		var yOffset = Random.Shared.Next(-maxOffset, maxOffset);
 
-		var destination = node2D.GlobalPosition + new Vector2(xOffset, yOffset);
+		var destination = position + new Vector2(xOffset, yOffset);
 		destination = destination.Clamp(Vector2.Zero, _mapSettings.Size);
 
 		entity.Set<Destination>(destination);
