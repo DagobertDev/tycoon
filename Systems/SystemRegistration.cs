@@ -11,6 +11,7 @@ public static class SystemRegistration
 			.AddSystem<InventoryCapacitySystem>()
 			.AddSystem<InventoryFullSystem>()
 			.AddSystem<RemoveCanNotWorkReasonNoneSystem>()
+			.AddSystem<CheckInputSystem>()
 			.AddSystem<ProductionSystem>()
 			.AddSystem<FindWorkplaceSystem>()
 			.AddSystem<NodeRemovalSystem>()

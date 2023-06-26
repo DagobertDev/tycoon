@@ -8,4 +8,5 @@ public enum CanNotWorkReason
 	None = 0,
 	InventoryFull = 1,
 	NoEmployee = 2,
+	NoInput = 4,
 }
