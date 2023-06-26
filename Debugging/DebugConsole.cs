@@ -46,6 +46,7 @@ public partial class DebugConsole : Panel
 
 		if (command is null)
 		{
+			_log.Text = "Command is not known";
 			return;
 		}
 
