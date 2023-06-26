@@ -18,7 +18,7 @@ public partial class EntityMenu : PanelContainer
 	private readonly Map _map;
 	private readonly Camera _camera;
 	private ShapeCast2D _shapeCast;
-	private Entity _entity;
+	public Entity Entity;
 	private readonly ISubject<Entity> _entityObservable = new Subject<Entity>();
 
 	public EntityMenu(INodeEntityMapper nodeEntityMapper, Map map, Camera camera)
@@ -49,8 +49,8 @@ public partial class EntityMenu : PanelContainer
 		margin.AddChild(_container);
 		AddChild(margin);
 
-		AddButton("Close", () => _entity = default);
-		AddButton("Focus", () => _camera.Focus(_entity), () => _camera.Follow(_entity));
+		AddButton("Close", () => Entity = default);
+		AddButton("Focus", () => _camera.Focus(Entity), () => _camera.Follow(Entity));
 		AddSeparator();
 		AddLabel(entity => $"Name: {entity.Get<Node2D>().Name}");
 
@@ -100,11 +100,11 @@ public partial class EntityMenu : PanelContainer
 			{
 				var workplace = entity.Get<Worker>().Workplace;
 				return workplace.Get<Node2D>().Name;
-			}, () =>  _entity = _entity.Get<Worker>().Workplace);
+			}, () =>  Entity = Entity.Get<Worker>().Workplace);
 		}
 
 		AddSeparator();
-		AddButton("Delete", () => _entity.Dispose());
+		AddButton("Delete", () => Entity.Dispose());
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -124,7 +124,7 @@ public partial class EntityMenu : PanelContainer
 		{
 			var collision = _shapeCast.GetCollider(0);
 			var entityNode = (Node2D)collision;
-			_entity = _nodeEntityMapper.GetEntity(entityNode);
+			Entity = _nodeEntityMapper.GetEntity(entityNode);
 			Visible = true;
 			SetProcess(true);
 		}
@@ -135,13 +135,13 @@ public partial class EntityMenu : PanelContainer
 
 	public override void _Process(double delta)
 	{
-		if (!_entity.IsAlive)
+		if (!Entity.IsAlive)
 		{
 			Visible = false;
 			return;
 		}
 
-		_entityObservable.OnNext(_entity);
+		_entityObservable.OnNext(Entity);
 	}
 
 	private void AddLabel(IObservable<bool> visibilityObservable, Func<Entity, string> textSelector)

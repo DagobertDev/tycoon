@@ -20,7 +20,7 @@ public class HelpCommand : IDebugCommand
 	{
 		if (parameters.Length == 0)
 		{
-			return $"Available commands: {string.Concat(_commands.Value.Select(command => command.Name))}";
+			return $"Available commands: {string.Join(", ", _commands.Value.Select(command => command.Name))}";
 		}
 
 		var commandName = parameters[0];
