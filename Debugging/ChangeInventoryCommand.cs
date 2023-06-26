@@ -69,6 +69,7 @@ public class ChangeInventoryCommand : IDebugCommand
 		}
 
 		inventory[good] = value;
+		entity.NotifyChanged<Inventory>();
 		return $"Amount of '{good}' is now {value}.";
 	}
 }
