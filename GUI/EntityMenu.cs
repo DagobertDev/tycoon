@@ -80,12 +80,23 @@ public partial class EntityMenu : PanelContainer
 			AddLabel(entity => $"Can't work because: {entity.Get<CanNotWorkReason>()}");
 		}
 
-		using (Section(EntityHas<MaximumWorkers>()))
+		using (Section(EntityHas<MaximumWorkers>(workers => workers > 0)))
 		{
 			AddLabel(entity =>
 			{
 				var employeeCount = WorkplaceHelper.GetWorkerCount(entity);
 				return $"Workers: {employeeCount}/{entity.Get<MaximumWorkers>().Value}";
+			});
+		}
+
+		using (Section(EntityHas<Producer>()))
+		{
+			AddLabel(entity =>
+			{
+				var producer = entity.Get<Producer>();
+				var progress = entity.Get<ProductionProgress>();
+				var input = producer.Input != null ? $"{producer.InputAmount} {producer.Input} → " : string.Empty;
+				return $"Producing: {input}{producer.OutputAmount} {producer.Good} ({progress.Value:P0})";
 			});
 		}
 
