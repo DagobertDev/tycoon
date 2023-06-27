@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DefaultEcs;
 using Godot;
 
@@ -6,6 +6,7 @@ namespace Tycoon.GUI;
 
 public partial class Camera : Camera2D
 {
+	private Vector2I _movementDirection;
 	private int Speed => 500;
 	private float MinimumZoom => 1 / 18f;
 	private float MaximumZoom => 1;
@@ -57,19 +58,45 @@ public partial class Camera : Camera2D
 			GlobalPosition -= motion.Relative / Zoom;
 			_selectedEntity = default;
 		}
+		else if (@event.IsActionPressed(InputActions.CameraLeft))
+		{
+			_movementDirection.X = -1;
+		}
+		else if (@event.IsActionReleased(InputActions.CameraLeft) && _movementDirection.X == -1)
+		{
+			_movementDirection.X = 0;
+		}
+		else if (@event.IsActionPressed(InputActions.CameraRight))
+		{
+			_movementDirection.X = 1;
+		}
+		else if (@event.IsActionReleased(InputActions.CameraRight) && _movementDirection.X == 1)
+		{
+			_movementDirection.X = 0;
+		}
+		else if (@event.IsActionPressed(InputActions.CameraUp))
+		{
+			_movementDirection.Y = -1;
+		}
+		else if (@event.IsActionReleased(InputActions.CameraUp) && _movementDirection.Y == -1)
+		{
+			_movementDirection.Y = 0;
+		}
+		else if (@event.IsActionPressed(InputActions.CameraDown))
+		{
+			_movementDirection.Y = 1;
+		}
+		else if (@event.IsActionReleased(InputActions.CameraDown) && _movementDirection.Y == 1)
+		{
+			_movementDirection.Y = 0;
+		}
 	}
 
 	public override void _Process(double delta)
 	{
-		var direction = Input.GetVector(
-			InputActions.CameraLeft,
-			InputActions.CameraRight,
-			InputActions.CameraUp,
-			InputActions.CameraDown);
+		Position += Speed * (float)delta * new Vector2(_movementDirection.X, _movementDirection.Y);
 
-		Position += Speed * (float)delta * direction;
-
-		if (_selectedEntity.IsAlive && direction == Vector2.Zero)
+		if (_selectedEntity.IsAlive && _movementDirection == Vector2.Zero)
 		{
 			Focus(_selectedEntity);
 		}
