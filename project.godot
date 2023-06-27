@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 project/assembly_name="Tycoon"
 
+[filesystem]
+
+import/blender/enabled=false
+
 [input]
 
 mouseclick_left={
