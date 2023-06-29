@@ -1,13 +1,13 @@
+using System.Collections.Generic;
 using DefaultEcs;
 using DefaultEcs.System;
-using System.Collections.Generic;
 using Tycoon.Components;
 
 namespace Tycoon.Systems;
 
 public sealed partial class ProductionCompletedSystem : AEntitySetSystem<double>
 {
-	[Update]
+	[Update, UseBuffer]
 	private static void Update(in Entity entity, in Producer producer, in Inventory inventory, ref ProductionProgress progress)
 	{
 		var resetProgress = progress >= 1;

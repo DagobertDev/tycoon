@@ -8,7 +8,7 @@ namespace Tycoon.Systems;
 [Without(typeof(CanNotWorkReason))]
 public sealed partial class ProductionWithoutWorkerSystem : AEntitySetSystem<double>
 {
-	[Update]
+	[Update, UseBuffer]
 	private static void Update(double delta, in Entity entity, in Producer producer, ref ProductionProgress progress)
 	{
 		progress += producer.ProgressPerSecond * delta;

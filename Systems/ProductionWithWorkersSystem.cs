@@ -15,7 +15,7 @@ public sealed partial class ProductionWithWorkersSystem : AEntitySetSystem<doubl
 		_workers = world.GetEntities().AsMultiMap<Worker>();
 	}
 
-	[Update]
+	[Update, UseBuffer]
 	private void Update(double delta, in Entity entity, in Producer producer, in Inventory inventory,
 	                    ref ProductionProgress progress)
 	{
