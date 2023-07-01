@@ -19,7 +19,8 @@ public static class SystemRegistration
 			.AddSystem<NodeRemovalSystem>()
 			.AddSystem<WalkSystem>()
 			.AddSystem<MovementSystem>()
-			.AddSystem<Node2DPositionSystem>();
+			.AddSystem<Node2DPositionSystem>()
+			.AddSystem<MarketSystem>();
 	}
 
 	private static IServiceCollection AddSystem<T>(this IServiceCollection serviceCollection)
