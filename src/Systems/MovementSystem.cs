@@ -15,6 +15,7 @@ public sealed partial class MovementSystem : AEntitySetSystem<double>
 		if (position.Value.DistanceSquaredTo(destination) < 10)
 		{
 			entity.Remove<Destination>();
+			entity.Set(AgentState.Idling);
 		}
 	}
 }

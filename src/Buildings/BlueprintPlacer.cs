@@ -90,6 +90,7 @@ public class BlueprintPlacer : IBlueprintPlacer
 		{
 			entity.Set(Worker.Unemployed);
 			entity.Set(worker.Speed);
+			entity.Set(AgentState.Idling);
 		}
 
 		_map.AddChild(godotEntity);

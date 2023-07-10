@@ -17,6 +17,7 @@ public static class SystemRegistration
 			.AddSystem<ProductionCompletedSystem>()
 			.AddSystem<FindWorkplaceSystem>()
 			.AddSystem<NodeRemovalSystem>()
+			.AddSystem<AISystem>()
 			.AddSystem<WalkSystem>()
 			.AddSystem<MovementSystem>()
 			.AddSystem<Node2DPositionSystem>()
