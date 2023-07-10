@@ -12,7 +12,7 @@ public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 
 	public FindWorkplaceSystem(World world) : base(world, CreateEntityContainer, null, 0)
 	{
-		_workplaces = world.GetEntities().With<HasFreeWorkplace>().AsSet();
+		_workplaces = world.GetEntities().With<MaximumWorkers>().AsSet();
 		world.SubscribeComponentRemoved<MaximumWorkers>(HandleWorkplaceDeletion);
 	}
 
@@ -25,20 +25,17 @@ public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 	[Update, UseBuffer]
 	private void Update(in Entity worker)
 	{
-		if (_workplaces.Count == 0)
+		var nullableWorkplace = SelectBestWorkplace(_workplaces.GetEntities(), worker);
+
+		if (nullableWorkplace == null)
 		{
 			return;
 		}
 
-		var workplace = SelectBestWorkplace(_workplaces.GetEntities(), worker);
+		var workplace = nullableWorkplace.Value;
 		var workerComponent = new Worker(workplace);
 		worker.Set(workerComponent);
 		workplace.RemoveFlag(CanNotWorkReason.NoEmployee);
-
-		if (WorkplaceHelper.GetWorkerCount(workplace) == workplace.Get<MaximumWorkers>())
-		{
-			workplace.Remove<HasFreeWorkplace>();
-		}
 	}
 
 	private void HandleWorkplaceDeletion(in Entity workplace, in MaximumWorkers _)
@@ -51,8 +48,16 @@ public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 		}
 	}
 
-	private static Entity SelectBestWorkplace(ReadOnlySpan<Entity> workplaces, Entity worker)
+	private static Entity? SelectBestWorkplace(ReadOnlySpan<Entity> workplaces, Entity worker)
 	{
-		return workplaces[0];
+		foreach (var workplace in workplaces)
+		{
+			if (WorkplaceHelper.HasFreeWorkplace(workplace))
+			{
+				return workplace;
+			}
+		}
+
+		return null;
 	}
 }

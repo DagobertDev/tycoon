@@ -76,7 +76,6 @@ public class BlueprintPlacer : IBlueprintPlacer
 			if (productionSite.MaximumWorkers > 0)
 			{
 				entity.Set(CanNotWorkReason.NoEmployee);
-				entity.Set<HasFreeWorkplace>();
 			}
 			else
 			{
