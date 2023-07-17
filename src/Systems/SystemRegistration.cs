@@ -21,6 +21,7 @@ public static class SystemRegistration
 			.AddSystem<WalkSystem>()
 			.AddSystem<MovementSystem>()
 			.AddSystem<Node2DPositionSystem>()
+			.AddSystem<SupplyDemandSetupSystem>()
 			.AddSystem<MarketSystem>();
 	}
 

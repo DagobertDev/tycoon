@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using DefaultEcs;
 using DefaultEcs.System;
 using Tycoon.Components;
@@ -9,7 +8,7 @@ namespace Tycoon.Systems;
 
 public sealed partial class MarketSystem : AEntitySetSystem<double>
 {
-	private readonly EntityMultiMap<Producer> _supply;
+	private readonly EntityMultiMap<Supply> _supply;
 
 	public MarketSystem(World world) : base(world, CreateEntityContainer, null, 0)
 	{
@@ -23,20 +22,18 @@ public sealed partial class MarketSystem : AEntitySetSystem<double>
 	}
 
 	[Update, UseBuffer]
-	private void Update(in Entity demand, in Producer producer, in Inventory demandInventory, in RemainingInventorySpace inventorySpace)
+	private void Update(in Entity entity, in Demand demand, in Inventory demandInventory, in RemainingInventorySpace inventorySpace)
 	{
 		if (inventorySpace == 0)
 		{
 			return;
 		}
 
-		var good = producer.Input;
+		var good = demand.Good;
 
-		Debug.Assert(good != null);
+		var dummySupply = new Supply(good);
 
-		var dummyProducer = new Producer(good, default, default);
-
-		if (!_supply.TryGetEntities(dummyProducer, out var suppliers))
+		if (!_supply.TryGetEntities(dummySupply, out var suppliers))
 		{
 			return;
 		}
@@ -63,7 +60,7 @@ public sealed partial class MarketSystem : AEntitySetSystem<double>
 
 		supplyInventory.Value[good] = supplyAmount - exchangedAmount;
 
-		demand.NotifyChanged<Inventory>();
+		entity.NotifyChanged<Inventory>();
 		supply.Value.NotifyChanged<Inventory>();
 	}
 
@@ -82,24 +79,19 @@ public sealed partial class MarketSystem : AEntitySetSystem<double>
 		return null;
 	}
 
-	private sealed class SupplyComparer : IEqualityComparer<Producer>
+	private sealed class SupplyComparer : IEqualityComparer<Supply>
 	{
-		public bool Equals(Producer? x, Producer? y)
+		public bool Equals(Supply x, Supply y)
 		{
 			if (x == y)
 			{
 				return true;
 			}
 
-			if (x is null || y is null)
-			{
-				return false;
-			}
-
 			return x.Good == y.Good;
 		}
 
-		public int GetHashCode(Producer obj)
+		public int GetHashCode(Supply obj)
 		{
 			return obj.Good.GetHashCode();
 		}
