@@ -16,8 +16,8 @@ public sealed partial class ProductionCompletedSystem : AEntitySetSystem<double>
 		{
 			progress -= 1;
 
-			var currentValue = inventory.Value.GetValueOrDefault(producer.Good);
-			inventory.Value[producer.Good] = currentValue + producer.OutputAmount;
+			var currentValue = inventory.Value.GetValueOrDefault(producer.Output);
+			inventory.Value[producer.Output] = currentValue + producer.OutputAmount;
 			RemoveUsedInput(producer, inventory);
 			entity.NotifyChanged<Inventory>();
 		}

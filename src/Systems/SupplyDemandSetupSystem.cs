@@ -9,7 +9,7 @@ public sealed partial class SupplyDemandSetupSystem : AEntitySetSystem<double>
 	[Update, UseBuffer]
 	private static void Update(in Entity entity, [Added, Changed] in Producer producer)
 	{
-		entity.Set(new Supply(producer.Good));
+		entity.Set(new Supply(producer.Output));
 
 		if (producer.Input != null)
 		{

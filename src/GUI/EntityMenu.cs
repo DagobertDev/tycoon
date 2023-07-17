@@ -96,7 +96,7 @@ public partial class EntityMenu : PanelContainer
 				var producer = entity.Get<Producer>();
 				var progress = entity.Get<ProductionProgress>();
 				var input = producer.Input != null ? $"{producer.InputAmount} {producer.Input} → " : string.Empty;
-				return $"Producing: {input}{producer.OutputAmount} {producer.Good} ({progress.Value:P0})";
+				return $"Producing: {input}{producer.OutputAmount} {producer.Output} ({progress.Value:P0})";
 			});
 		}
 
