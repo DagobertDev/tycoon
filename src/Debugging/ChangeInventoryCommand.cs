@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Tycoon.Components;
 using Tycoon.GUI;
 
@@ -24,14 +24,10 @@ public class ChangeInventoryCommand : IDebugCommand
 		var entity = _entityMenu.Entity;
 
 		if (!entity.IsAlive)
-		{
 			return "No valid entity selected";
-		}
 
 		if (parameters.Length != 3)
-		{
 			return "Exactly 3 parameters expected";
-		}
 
 		var command = parameters[0];
 		var goodString = parameters[1];
@@ -41,14 +37,10 @@ public class ChangeInventoryCommand : IDebugCommand
 		var good = new Good(goodString);
 
 		if (!int.TryParse(amountString, out var changedAmount))
-		{
 			return $"'{amountString}' is not a valid amount.";
-		}
 
 		if (!entity.Has<Inventory>())
-		{
 			entity.Set(new Inventory(new Dictionary<Good, int>()));
-		}
 
 		var inventory = entity.Get<Inventory>().Value;
 		var value = inventory.GetValueOrDefault(good);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -36,9 +36,7 @@ public partial class DebugConsole : Panel
 		var content = args.Split(' ');
 
 		if (content.Length == 0)
-		{
 			return;
-		}
 
 		var name = content[0];
 		var command = _commands.SingleOrDefault(command =>
@@ -53,9 +51,7 @@ public partial class DebugConsole : Panel
 		var result = command.Execute(content.Skip(1).ToArray());
 
 		if (result is null)
-		{
 			return;
-		}
 
 		_log.Text = result;
 	}

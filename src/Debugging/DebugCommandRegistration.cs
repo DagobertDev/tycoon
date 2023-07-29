@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,9 +13,7 @@ public static class DebugCommandRegistration
 			.Where(x => !x.IsAbstract && x.IsAssignableTo(typeof(IDebugCommand)));
 
 		foreach (var blueprint in blueprints)
-		{
 			serviceCollection.AddSingleton(typeof(IDebugCommand), blueprint);
-		}
 
 		serviceCollection.AddSingleton(serviceProvider =>
 			new Lazy<IEnumerable<IDebugCommand>>(serviceProvider.GetServices<IDebugCommand>));
