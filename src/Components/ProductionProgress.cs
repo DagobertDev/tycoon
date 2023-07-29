@@ -6,5 +6,5 @@ public readonly record struct ProductionProgress(double Value)
 		progress.Value;
 
 	public static implicit operator ProductionProgress(double value) =>
-		new ProductionProgress(value);
+		new(value);
 }

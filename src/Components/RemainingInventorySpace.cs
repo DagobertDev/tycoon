@@ -6,5 +6,5 @@ public readonly record struct RemainingInventorySpace(int Value)
 		space.Value;
 
 	public static implicit operator RemainingInventorySpace(int value) =>
-		new RemainingInventorySpace(value);
+		new(value);
 }

@@ -8,5 +8,5 @@ public readonly record struct Destination(Vector2 Value)
 		destination.Value;
 
 	public static implicit operator Destination(Vector2 value) =>
-		new Destination(value);
+		new(value);
 }
