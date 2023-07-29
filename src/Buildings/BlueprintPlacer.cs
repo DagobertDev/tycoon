@@ -74,13 +74,9 @@ public class BlueprintPlacer : IBlueprintPlacer
 			entity.Set<ProductionProgress>();
 
 			if (productionSite.MaximumWorkers > 0)
-			{
 				entity.Set(CanNotWorkReason.NoEmployee);
-			}
 			else
-			{
 				entity.Set<NoWorkersRequired>();
-			}
 
 			entity.Set<MaximumWorkers>(productionSite.MaximumWorkers);
 		}
@@ -98,19 +94,13 @@ public class BlueprintPlacer : IBlueprintPlacer
 	public bool CanPlace(IBlueprint blueprint, Transform2D transform)
 	{
 		if (blueprint.Cost > _goldCounter.Gold)
-		{
 			return false;
-		}
 
 		if (!new Rect2(Vector2I.Zero, _mapSettings.Size).HasPoint(transform.Origin))
-		{
 			return false;
-		}
 
 		if (_shapeCast.Shape != blueprint.Shape)
-		{
 			_shapeCast.Shape = blueprint.Shape;
-		}
 
 		_shapeCast.GlobalTransform = transform;
 		_shapeCast.ForceShapecastUpdate();

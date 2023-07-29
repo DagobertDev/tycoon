@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Tycoon.Buildings;
 
@@ -12,9 +12,7 @@ public static class BlueprintRegistration
 			.Where(x => !x.IsAbstract && x.IsAssignableTo(typeof(IBlueprint)));
 
 		foreach (var blueprint in blueprints)
-		{
 			serviceCollection.AddSingleton(typeof(IBlueprint), blueprint);
-		}
 
 		return serviceCollection;
 	}
