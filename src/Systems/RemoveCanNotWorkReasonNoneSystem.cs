@@ -7,14 +7,8 @@ namespace Tycoon.Systems;
 public sealed partial class RemoveCanNotWorkReasonNoneSystem : AEntitySetSystem<double>
 {
 	[WithPredicate]
-	private static bool NoReason(in CanNotWorkReason reason)
-	{
-		return reason == CanNotWorkReason.None;
-	}
+	private static bool NoReason(in CanNotWorkReason reason) => reason == CanNotWorkReason.None;
 
 	[Update, UseBuffer]
-	private static void Update(in Entity entity)
-	{
-		entity.Remove<CanNotWorkReason>();
-	}
+	private static void Update(in Entity entity) => entity.Remove<CanNotWorkReason>();
 }

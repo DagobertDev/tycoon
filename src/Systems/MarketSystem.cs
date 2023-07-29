@@ -16,10 +16,7 @@ public sealed partial class MarketSystem : AEntitySetSystem<double>
 	}
 
 	[WithPredicate]
-	private static bool HasDemand(in Producer producer)
-	{
-		return producer.Input != null;
-	}
+	private static bool HasDemand(in Producer producer) => producer.Input != null;
 
 	[Update, UseBuffer]
 	private void Update(in Entity entity, in Demand demand, in Inventory demandInventory, in RemainingInventorySpace inventorySpace)
@@ -91,9 +88,6 @@ public sealed partial class MarketSystem : AEntitySetSystem<double>
 			return x.Good == y.Good;
 		}
 
-		public int GetHashCode(Supply obj)
-		{
-			return obj.Good.GetHashCode();
-		}
+		public int GetHashCode(Supply obj) => obj.Good.GetHashCode();
 	}
 }

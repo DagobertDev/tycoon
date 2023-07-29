@@ -116,8 +116,5 @@ public partial class Camera : Camera2D
 		}
 	}
 
-	public void Follow(Entity entity)
-	{
-		_selectedEntity = entity;
-	}
+	public void Follow(Entity entity) => _selectedEntity = entity;
 }

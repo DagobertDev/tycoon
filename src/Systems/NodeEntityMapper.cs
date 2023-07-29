@@ -12,8 +12,5 @@ public class NodeEntityMapper : INodeEntityMapper
 		_entityMap = world.GetEntities().AsMap<Node2D>();
 	}
 
-	public Entity GetEntity(Node2D node)
-	{
-		return _entityMap[node];
-	}
+	public Entity GetEntity(Node2D node) => _entityMap[node];
 }

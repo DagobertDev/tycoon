@@ -170,10 +170,8 @@ public partial class EntityMenu : PanelContainer
 			.Subscribe(text => label.Text = text);
 	}
 
-	private void AddLabel(Func<Entity, string> textSelector)
-	{
+	private void AddLabel(Func<Entity, string> textSelector) =>
 		AddLabel(_currentSectionVisibility, textSelector);
-	}
 
 	private void AddSeparator(IObservable<bool> visibilityObservable)
 	{
@@ -184,10 +182,7 @@ public partial class EntityMenu : PanelContainer
 			.Subscribe(visible => separator.Visible = visible);
 	}
 
-	private void AddSeparator()
-	{
-		AddSeparator(_currentSectionVisibility);
-	}
+	private void AddSeparator() => AddSeparator(_currentSectionVisibility);
 
 	private void AddButton(IObservable<bool> visibilityObservable, Func<Entity, string> textSelector, Action action)
 	{
@@ -237,13 +232,9 @@ public partial class EntityMenu : PanelContainer
 
 	private IObservable<bool> _currentSectionVisibility = Observable.Return(true);
 
-	private IObservable<bool> EntityHas<T>()
-	{
-		return _entityObservable.Select(entity => entity.Has<T>());
-	}
+	private IObservable<bool> EntityHas<T>() =>
+		_entityObservable.Select(entity => entity.Has<T>());
 
-	private IObservable<bool> EntityHas<T>(Predicate<T> predicate)
-	{
-		return _entityObservable.Select(entity => entity.Has<T>() && predicate(entity.Get<T>()));
-	}
+	private IObservable<bool> EntityHas<T>(Predicate<T> predicate) =>
+		_entityObservable.Select(entity => entity.Has<T>() && predicate(entity.Get<T>()));
 }

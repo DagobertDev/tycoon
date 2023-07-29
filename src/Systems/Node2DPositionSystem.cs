@@ -1,4 +1,4 @@
-﻿using DefaultEcs.System;
+using DefaultEcs.System;
 using Godot;
 using Tycoon.Components;
 
@@ -10,8 +10,6 @@ namespace Tycoon.Systems;
 public sealed partial class Node2DPositionSystem : AEntitySetSystem<double>
 {
 	[Update]
-	private static void Update(in Node2D node2D, [Added, Changed] in Position position)
-	{
+	private static void Update(in Node2D node2D, [Added, Changed] in Position position) =>
 		node2D.GlobalPosition = position;
-	}
 }

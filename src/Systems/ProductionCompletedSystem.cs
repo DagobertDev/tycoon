@@ -28,10 +28,8 @@ public sealed partial class ProductionCompletedSystem : AEntitySetSystem<double>
 		}
 	}
 
-	private static bool HasEnoughInput(Producer producer, Inventory inventory)
-	{
-		return producer.Input == null || inventory.Value.GetValueOrDefault(producer.Input) >= producer.InputAmount;
-	}
+	private static bool HasEnoughInput(Producer producer, Inventory inventory) =>
+		producer.Input == null || inventory.Value.GetValueOrDefault(producer.Input) >= producer.InputAmount;
 
 	private static void RemoveUsedInput(Producer producer, Inventory inventory)
 	{

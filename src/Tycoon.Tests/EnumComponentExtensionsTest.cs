@@ -31,10 +31,7 @@ public class EnumComponentExtensionsTest
 		Assert.That(_entity.Has<TestEnum>(), Is.False);
 	}
 
-	private static IEnumerable<TestEnum> GetAllTestValues()
-	{
-		return Enum.GetValues<TestEnum>();
-	}
+	private static IEnumerable<TestEnum> GetAllTestValues() => Enum.GetValues<TestEnum>();
 
 	public enum TestEnum
 	{
