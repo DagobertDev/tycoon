@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,9 +19,8 @@ public class HelpCommand : IDebugCommand
 	public string? Execute(string[] parameters)
 	{
 		if (parameters.Length == 0)
-		{
-			return $"Available commands: {string.Join(", ", _commands.Value.Select(command => command.Name))}";
-		}
+			return $"Available commands: " +
+				$"{string.Join(", ", _commands.Value.Select(command => command.Name))}";
 
 		var commandName = parameters[0];
 		var command = _commands.Value.SingleOrDefault(command =>

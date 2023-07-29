@@ -103,9 +103,7 @@ public partial class Camera : Camera2D
 		GlobalPosition = entity.Get<Node2D>().GlobalPosition;
 
 		if (_selectedEntity != entity)
-		{
 			_selectedEntity = default;
-		}
 	}
 
 	public void Follow(Entity entity) => _selectedEntity = entity;
