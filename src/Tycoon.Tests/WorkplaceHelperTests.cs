@@ -10,10 +10,7 @@ public class WorkplaceHelperTests
 	private World _world;
 
 	[SetUp]
-	public void Setup()
-	{
-		_world = new World();
-	}
+	public void Setup() => _world = new World();
 
 	[Test]
 	public void TestInitialWorkerCountIsZero()

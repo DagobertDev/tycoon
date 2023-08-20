@@ -18,24 +18,16 @@ public partial class Camera : Camera2D
 	public override void _Ready()
 	{
 		if (Speed <= 0)
-		{
 			throw new ArgumentOutOfRangeException(nameof(Speed));
-		}
 
 		if (MinimumZoom <= 0)
-		{
 			throw new ArgumentOutOfRangeException(nameof(MinimumZoom));
-		}
 
 		if (MaximumZoom < MinimumZoom)
-		{
 			throw new ArgumentException(nameof(MaximumZoom));
-		}
 
 		if (ZoomStep is <= 0 or >= 1)
-		{
 			throw new ArgumentOutOfRangeException(nameof(ZoomStep));
-		}
 
 		Enabled = true;
 		Zoom = Vector2.One * InitialZoom;
@@ -111,13 +103,8 @@ public partial class Camera : Camera2D
 		GlobalPosition = entity.Get<Node2D>().GlobalPosition;
 
 		if (_selectedEntity != entity)
-		{
 			_selectedEntity = default;
-		}
 	}
 
-	public void Follow(Entity entity)
-	{
-		_selectedEntity = entity;
-	}
+	public void Follow(Entity entity) => _selectedEntity = entity;
 }

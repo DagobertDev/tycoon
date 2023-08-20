@@ -9,10 +9,7 @@ namespace Tycoon.Systems;
 public sealed partial class CheckInputSystem : AEntitySetSystem<double>
 {
 	[WithPredicate]
-	private static bool RequiresInput(in Producer producer)
-	{
-		return producer.Input != null;
-	}
+	private static bool RequiresInput(in Producer producer) => producer.Input != null;
 
 	[Update]
 	private static void Update(in Entity entity, [Added, Changed] in Producer producer, [Added, Changed] in Inventory inventory)

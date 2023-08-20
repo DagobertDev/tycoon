@@ -11,10 +11,7 @@ namespace Tycoon.Systems;
 public sealed partial class WalkSystem : AEntitySetSystem<double>
 {
 	[WithPredicate]
-	private static bool IsWalkingAround(in AgentState state)
-	{
-		return state == AgentState.WalkingAround;
-	}
+	private static bool IsWalkingAround(in AgentState state) => state == AgentState.WalkingAround;
 
 	[ConstructorParameter]
 	private readonly MapSettings _mapSettings;

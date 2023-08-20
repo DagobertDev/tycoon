@@ -7,10 +7,7 @@ namespace Tycoon.Systems;
 public sealed partial class AISystem : AEntitySetSystem<double>
 {
 	[WithPredicate]
-	private static bool Idling(in AgentState state)
-	{
-		return state == AgentState.Idling;
-	}
+	private static bool Idling(in AgentState state) => state == AgentState.Idling;
 
 	[Update, UseBuffer]
 	private static void Update(in Entity entity, in Worker worker)

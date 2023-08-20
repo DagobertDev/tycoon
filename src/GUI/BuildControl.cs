@@ -26,8 +26,5 @@ public partial class BuildControl : HBoxContainer
 		}
 	}
 
-	private void ButtonOnPressed(IBlueprint blueprint)
-	{
-		_blueprintGhost.SetBuilding(blueprint);
-	}
+	private void ButtonOnPressed(IBlueprint blueprint) => _blueprintGhost.SetBuilding(blueprint);
 }

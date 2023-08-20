@@ -17,10 +17,7 @@ public sealed partial class FindWorkplaceSystem : AEntitySetSystem<double>
 	}
 
 	[WithPredicate]
-	private static bool HasNoWorkplace(in Worker worker)
-	{
-		return worker == Worker.Unemployed;
-	}
+	private static bool HasNoWorkplace(in Worker worker) => worker == Worker.Unemployed;
 
 	[Update, UseBuffer]
 	private void Update(in Entity worker)

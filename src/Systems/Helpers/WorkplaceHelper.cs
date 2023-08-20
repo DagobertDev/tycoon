@@ -27,10 +27,8 @@ public static class WorkplaceHelper
 		return workers.Length;
 	}
 
-	public static bool HasFreeWorkplace(Entity workplace)
-	{
-		return GetWorkerCount(workplace) < workplace.Get<MaximumWorkers>();
-	}
+	public static bool HasFreeWorkplace(Entity workplace) =>
+		GetWorkerCount(workplace) < workplace.Get<MaximumWorkers>();
 
 	private static ReadOnlySpan<Entity> GetWorkersInternal(Entity workplace)
 	{

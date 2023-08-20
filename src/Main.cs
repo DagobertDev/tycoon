@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DefaultEcs;
 using DefaultEcs.System;
 using Godot;
@@ -39,8 +39,7 @@ public partial class Main : Node
 		_system.Update(delta);
 	}
 
-	private static void RegisterServices(IServiceCollection serviceCollection)
-	{
+	private static void RegisterServices(IServiceCollection serviceCollection) =>
 		serviceCollection.AddSingleton<World>()
 			.AddSingleton<INodeEntityMapper, NodeEntityMapper>()
 			.AddSingleton<IGoldCounter, GoldCounter>()
@@ -59,7 +58,6 @@ public partial class Main : Node
 			.AddBlueprints()
 			.AddSystems()
 			.AddDebugCommands();
-	}
 
 	private void BuildGUI(IServiceProvider serviceProvider)
 	{

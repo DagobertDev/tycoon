@@ -1,14 +1,10 @@
-﻿namespace Tycoon.Components;
+namespace Tycoon.Components;
 
 public readonly record struct RemainingInventorySpace(int Value)
 {
-	public static implicit operator int(RemainingInventorySpace space)
-	{
-		return space.Value;
-	}
+	public static implicit operator int(RemainingInventorySpace space) =>
+		space.Value;
 
-	public static implicit operator RemainingInventorySpace(int value)
-	{
-		return new RemainingInventorySpace(value);
-	}
+	public static implicit operator RemainingInventorySpace(int value) =>
+		new(value);
 }
